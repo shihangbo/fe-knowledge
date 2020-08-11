@@ -1,0 +1,19 @@
+{
+  "title": "fe knowledge",
+  "author": "watson",
+  "description": "select * from learn",
+  "language": "zh-hans",
+  "gitbook": "3.2.3",
+  "structure": {
+      "readme": "README.md"
+  },
+  "plugins": [
+      "-sharing",
+      "github"
+  ],
+  "pluginsConfig": {
+    "github": {
+        "url": "https://github.com/shihangbo/fe-knowledge"
+    }
+  }
+}
