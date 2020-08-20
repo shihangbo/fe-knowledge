@@ -41,7 +41,29 @@
       value: true
     })
   }
-  require.t = function(){}
+  // 创建一个模拟命名空间对象，核心用法：把任意一个模块转成es模块
+  // mode & 1 value is a module id, require it
+  // mode & 2 merge all propertyies of value into the ns
+  // mode & 4 return value when already ns object
+  // mode & 8|1 behave like require 
+  require.t = function(value, mode){
+    if(mode & 1) value = require(value)
+    if(mode & 8) return value
+    if(mode & 4 && typeof value === 'object' && value && value.__esModule) return value
+    var ns = Object.create(null)
+    require.r(ns) // 将bs定义成一个es6模块
+    Object.defineProperty(ns, 'default', {
+      enumerable: true,
+      value
+    })
+    // 将value的属性和值 同步到ns模块上
+    if(mode & 2 && typeof value != 'string') {
+      for(var key in value){
+        require.d(ns,key,function(key){return value[key]}.bind(null,key))
+      }
+    }
+    return ns
+  }
 
   /* 获取默认导出的函数，为了兼容 非harmony模块
   *  excemple
@@ -64,7 +86,8 @@
   require.o = function(object,property){
     return Object.prototype.hasOwnProperty.call(object,property)
   }
-  require.p = ''            // __webpack_pulic_path__ 公开访问路径
+  // __webpack_pulic_path__ 公开访问路径
+  require.p = ''
 
   return require((require.s = "./src/index.js"))  // require.s 入口文件ID，即相对根目录的路径
 })({
