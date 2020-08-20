@@ -2,7 +2,6 @@
 (function(modules){
   // 缓存模块
   let installedModules = {}
-
   // 在浏览器实现一套common.js require方法
   function require(moduleId){
     if(installedModules[moduleId]){
@@ -117,3 +116,26 @@
  * key是模块ID，一个相对于项目根目录的相对路径  ./src
  * value是一个函数，一个common.js的模块定义，用户写的代码将成为common.js模块的函数体
  */
+
+//  webpack 打包之后的核心代码
+//  (function(modules){
+//   function require(moduleId){
+//     let module = {
+//       i: moduleId,
+//       l: false,
+//       exports: {}
+//     }
+//     modules[moduleId].call(module.exports, module, module.exports, require)
+//     module.l = true
+//     return module.exports
+//   }
+//   return require('./src/index.js')
+//  })({
+//   './src/index.js':function(module,exports,require){
+//     const title = require('./src/title.js')
+//     console.log(title)
+//   },
+//   './src/title.js':function(module,exports){
+//     module.exports = 'title'
+//   }
+//  })
