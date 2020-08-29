@@ -90,7 +90,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
   *     let esModule = {__esModule:true, default: {name:'watson'}}
   *     let getter2 = require.n(esModule)
   *     console.log(getter2.a) // {name:'watson'}
-  *  原理：当webpack得带一个模块之后，会便利这个模块所有语句，发现任意一个export/import节点，就认为是es6模块，导出当时候增加 __esModule:true 属性！
+  *  原理：当webpack得带一个模块之后，会遍历这个模块所有语句，发现任意一个export/import节点，就认为是es6模块，导出当时候增加 __esModule:true 属性！
   */
 
 
@@ -191,8 +191,68 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 * 
 * 在以上过程中，webpack会在特定的时间点广播出特定的时间，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用webpack提供的API改变webpack的运行结果；
 * 
-* 
-* 
-* 
-* 
 */
+
+/**
+ * webpack 调试流程 - 配合 vscode
+ * 1.vscode debug功能：node.js  create a launch json file
+ *   作用：1.调试webpack源码；2.写webpack插件的时候用于插件的调试；
+ * 
+ */
+
+/**
+* 手写 webpack-cli.js
+* 1.Stats对象，在webpack的回调函数中得到，来自于 Compilation.getStats()，返回的主要包含 modules、chunks和assets三个属性值的对象；
+*   modules：记录所有解析后的模块
+*     modules: [{
+*                 id: './src/index.js',
+*                 name: './src/index.js',
+*                 chunks: [Array],
+*                 identifier: 'path',
+*                 source: 'import title, {name} form "./title";\r\nconsole.log(title,name);\r\n'
+*                 ...
+*              }]
+*   chunks： 记录所有chunk
+*     chunks：[{
+*               id: 'main',
+*               rendered: true,
+*               modules: [Array],
+*               children: [],
+*               parent: [],
+*               size: 990,
+*               ...
+*             }]
+*   assets： 记录所有要生成的文件
+*       assets：[{
+*                 name: 'index.html',
+*                 size: 990,
+*                 chunks: [],
+*                 chunkNames: [],
+*                 info: {},
+*                 ...
+*               }]
+*/
+
+
+var webpack = require('webpack');
+
+var options = require('./webpack.config');
+
+var compiler = webpack(options); // 开始启动编译，编译完成后会执行回调函数
+
+compiler.run(function (err, stats) {
+  console.log('编译完成后会执行回调函数：', err //错误对象
+  , stats.toJson({
+    //status 保存输出的信息 编译的信息
+    entries: true,
+    //输出 入口信息
+    chunks: true,
+    //输出 代码块信息
+    modules: true,
+    //输出 模块信息 {}
+    _modules: true,
+    //同上         []
+    assets: true //输出 打包出来的资源信息
+
+  }));
+});
