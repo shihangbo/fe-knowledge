@@ -4,12 +4,12 @@
 * [JavaScript](part1/README.md)
     * [Function](part1/function.md)
     * [GitBook is nice](part1/gitbook.md)
-* [Part 2](part2/README.md)
-    * [Writing is nice 2](part2/writing.md)
-    * [GitBook is nice 2](part2/gitbook.md)
+* [webpack](webpack/README.md)
+    * [概述](webpack/gitbook.md)
+    * [coding](webpack/writing.md)
 
 ---
 
-* [Part 2](part2/README.md)
-    * [Writing is nice 2](part2/writing.md)
-    * [GitBook is nice 2](part2/gitbook.md)
+* [JavaScript](part1/README.md)
+    * [Function](part1/function.md)
+    * [GitBook is nice](part1/gitbook.md)
