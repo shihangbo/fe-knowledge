@@ -100,12 +100,18 @@ value是一个函数，一个common.js的模块定义，用户写的代码将成
 
   return require((require.s = "./src/index.js"))  // require.s 入口文件ID，即相对根目录的路径
 })({
+  // js模块相互引用
   "./src/index.js":function(module,exports,__webpack_require__){
     let title = __webpack_require__("./src/title.js")
     console.log(title)
   },
+  // js模块导出
   "./src/title.js":function(modules,exports){
     module.exports = 'title'
-  }
+  },
+  // 图片模块导出
+  "./src/logo.png":(function(module){
+    module.exports = "images/hash.png"
+  })
 })
 ```

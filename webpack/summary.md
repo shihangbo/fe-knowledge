@@ -83,10 +83,15 @@ compiler.run((err,stats)=>{
 ### 6.webpack-loader
 1.概述（详见xmind）  
 2.自定义 loader 配置  
-3.手写 loaders/babel-loader.js  
+3.手写 loaders/babel-loader.js  将es6 转成 es5语法
+  原理 使用babel进行转换
 ```js
 const babel = require('@babel/core')
 function loader(source, inputSourceMap){
+  // 获取路径的内置属性
+  console.log(this.request)     // '/loaders/babel-loader.js!/src/index.js'
+  console.log(this.userRequest) // '/src/index.js'
+
   let options = {
     presets: ['@babel/preset-env'],
     inputSourceMap,
@@ -98,5 +103,27 @@ function loader(source, inputSourceMap){
   // 返回多个值
   return this.callback(null,code,map,ast)
 }
+module.exports = loader
+```
+4.手写 loaders/file-loader.js  将图片img/jpge/png 转成 js模块
+  原理 把源文件拷贝一份输出到打包后的目录，dist，然后返回访问路径
+```js
+/*
+ * 默认情况下source是字符
+ * 
+*/
+const {getOptions,interpoleName} = require('loader-utils)
+function loader(content, inputSourceMap) {
+  // 合并参数，webpack.config.js中的用户自定义的loader参数
+  let options = getOptions(this) || {}
+  // 获取新的文件名/文件路径，
+  let url = interpoleName(this, options.filename || 'images/[hash].[ext]', {content})
+  // 写入到输出目录，调用eimtFile方法
+  this.emitFile(url,content)
+  // 返回一个js模块
+  return `module.exports = ${JSON.stringify(url)}`
+}
+// row属性是原生的，告诉webpack我想得到一个 Buffer，而非一个字符串
+loader.row = true
 module.exports = loader
 ```
