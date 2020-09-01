@@ -1,7 +1,7 @@
-webpack
+## webpack基础知识
 
+#### 1.toStringFlag
 ```js
-// ### 1.toStringFlag
 console.log(Object.prototype.toString.call('watson'))
 console.log(Object.prototype.toString.call(1))
 console.log(Object.prototype.toString.call([1,2,3]))
@@ -16,8 +16,8 @@ Object.defineProperty(obj, Symbol.toStringTag, {value: 'Module'})
 console.log(Object.prototype.toString.call(obj))
 ```
 
+#### 2.Object.create
 ```js
-// ### 2.Object.create
 let ns1 = {}
 console.log(ns1, Object.getPrototypeOf(ns1))
 
@@ -33,13 +33,13 @@ Object.create = function(proto) {
 }
 ```
 
+#### 3.Oject.defineProperty(obj,key,{})
 ```js
-// ### 3.Oject.defineProperty(obj,key,{})
-// getter 获取器函数
+getter //获取器函数
 ```
 
+#### 4.按位与 &
 ```js
-// ### 4.按位与 &
 // 比特 bit 二进制数系统中，每个0或1就是一个位(bit)，位是数据存储的最小单位
 // 其中 8个bit 就是一个字节 Byte ，即 1byte=8bit（一个英文字母=1字节，一个中文汉字=2字节）
 // 按位与& 两个输入数的同一位都为1才为 1
@@ -49,9 +49,8 @@ let b = 0b1111
 console.log(a&b) // 2^3 = 8
 ```
 
-
+#### 5.问题
 ```js
-// ### 5.问题
 // 5.1 es6 import export 的实现
 // 5.2 第三方插件是如何运行的
 ```
