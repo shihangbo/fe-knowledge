@@ -249,10 +249,37 @@ compiler.run(function (err, stats) {
     chunks: true,
     //输出 代码块信息
     modules: true,
-    //输出 模块信息 {}
+    //输出 模块信息 数组保存所有modules对象，[{id:'index.js',name:'index'}]
     _modules: true,
-    //同上         []
+    //同上         key-value, {'index.js':{id:'index.js',name:'index'}}
     assets: true //输出 打包出来的资源信息
 
   }));
 });
+/**
+ * webpack-loader
+ * 1.概述（详见xmind）
+ * 2.自定义 loader 配置
+ * 3.手写 loaders/babel-loader.js
+ */
+
+var babel = require('@babel/core');
+
+function loader(source, inputSourceMap) {
+  var options = {
+    presets: ['@babel/preset-env'],
+    inputSourceMap: inputSourceMap,
+    sourceMaps: true
+  }; // babel转换后生成 code-转换后的代码，map-映射文件，ast-抽象语法树
+
+  var _babel$transform = babel.transform(source, options),
+      code = _babel$transform.code,
+      map = _babel$transform.map,
+      ast = _babel$transform.ast; // return code
+  // 返回多个值
+
+
+  return this.callback(null, code, map, ast);
+}
+
+module.exports = loader;

@@ -219,9 +219,30 @@ compiler.run((err,stats)=>{
   ,stats.toJson({  //status 保存输出的信息 编译的信息
     entries: true, //输出 入口信息
     chunks: true,  //输出 代码块信息
-    modules: true, //输出 模块信息 {}
-    _modules: true,//同上         []
+    modules: true, //输出 模块信息 数组保存所有modules对象，[{id:'index.js',name:'index'}]
+    _modules: true,//同上         key-value, {'index.js':{id:'index.js',name:'index'}}
     assets: true,  //输出 打包出来的资源信息
   }))
 })
 
+/**
+ * webpack-loader
+ * 1.概述（详见xmind）
+ * 2.自定义 loader 配置
+ * 3.手写 loaders/babel-loader.js
+ */
+
+const babel = require('@babel/core')
+function loader(source, inputSourceMap){
+  let options = {
+    presets: ['@babel/preset-env'],
+    inputSourceMap,
+    sourceMaps:true
+  }
+  // babel转换后生成 code-转换后的代码，map-映射文件，ast-抽象语法树
+  let {code,map,ast} = babel.transform(source,options)
+  // return code
+  // 返回多个值
+  return this.callback(null,code,map,ast)
+}
+module.exports = loader
