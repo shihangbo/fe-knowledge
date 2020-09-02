@@ -135,12 +135,8 @@ module.exports = loader
 6.3 关键字识别：eval-eval执行，source-map - 生成.map文件，cheap-不包含列信息，module-包含loader的sourcemap信息，inline-将.map作为dataURI嵌入打包后的代码，不单独生成.map文件
 
 ### 7.url-loader
-7.1 样式处理
-    css-loader：处理css中的@import和ur这样的外部链接
-    style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里
-    less-loader：把less编译成css
-7.2 url-loader是基于file-loader的，多一个功能：如果图片或者文件的大小【小于指定阀值】就不再拷贝文件而是变成一个base64字符串
-7.3 手写实现
+7.1 url-loader是基于file-loader的，多一个功能：如果图片或者文件的大小【小于指定阀值】就不再拷贝文件而是变成一个base64字符串
+7.2 手写实现
 ```js
 let {getOptions} = require('loader-utils')
 let mime = require('mime')
@@ -161,5 +157,40 @@ function loader(source){
   }
 }
 loader.row = true // 不然让webpack把源文件转成字符串，true-源文件以buffer（字节数组）返回，false-源文件以字符串返回
+module.exports = loader
+```
+
+### 8.url-loader
+8.1 样式处理
+    css-loader：处理css中的@import和url这样的外部链接
+    style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里
+    less-loader：把less编译成css
+8.2 手写实现
+```js
+// less-loader
+let {getOptions} = require('loader-utils')
+let less = require('less')
+function loader(source){
+  //如何把loader变成异步？
+  //调用this.async方法，webpack就会异步处理这个loader
+  let callback = this.async()
+  less.render(source,{filename:this.resource},(err,output)=>{
+    callback(err,output.css)
+  })
+}
+module.exports = loader
+```
+```js
+  // style-loader
+let {getOptions} = require('loader-utils')
+function loader(source){
+  let script = `
+    let style = document.createElement('style');
+    style.innerHTML = ${JSON.stringify(source)};
+    document.head.appendChild(style);
+    module.exports='';
+  `
+  return script
+}
 module.exports = loader
 ```
