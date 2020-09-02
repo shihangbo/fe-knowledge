@@ -128,15 +128,15 @@ loader.row = true
 module.exports = loader
 ```
 
-### 6.sourcemap
-6.1 sourcemap 是为了解决开发代码与实际打包后运行代码不一致时，帮助我们debug到原始代码到技术
-6.2 webpack 通过配置可以自动实现sourcemap功能，map文件是一种对应编译文件和源文件到方法
-    可配置为：source-map / eval-source-map / cheap-module-eval-source-map / cheap-eval-source-map / eval / cheap-source-map / cheap-module-source-map
-6.3 关键字识别：eval-eval执行，source-map - 生成.map文件，cheap-不包含列信息，module-包含loader的sourcemap信息，inline-将.map作为dataURI嵌入打包后的代码，不单独生成.map文件
+### 7.sourcemap
+ 1 sourcemap 是为了解决开发代码与实际打包后运行代码不一致时，帮助我们debug到原始代码到技术  
+ 2 webpack 通过配置可以自动实现sourcemap功能，map文件是一种对应编译文件和源文件到方法  
+    可配置为：source-map / eval-source-map / cheap-module-eval-source-map / cheap-eval-source-map / eval / cheap-source-map / cheap-module-source-map  
+ 3 关键字识别：eval-eval执行，source-map - 生成.map文件，cheap-不包含列信息，module-包含loader的sourcemap信息，inline-将.map作为dataURI嵌入打包后的代码，不单独生成.map文件  
 
-### 7.url-loader
-7.1 url-loader是基于file-loader的，多一个功能：如果图片或者文件的大小【小于指定阀值】就不再拷贝文件而是变成一个base64字符串
-7.2 手写实现
+### 8.url-loader
+ 1 url-loader是基于file-loader的，多一个功能：如果图片或者文件的大小【小于指定阀值】就不再拷贝文件而是变成一个base64字符串
+ 2 手写实现  
 ```js
 let {getOptions} = require('loader-utils')
 let mime = require('mime')
@@ -160,12 +160,12 @@ loader.row = true // 不然让webpack把源文件转成字符串，true-源文�
 module.exports = loader
 ```
 
-### 8.url-loader
-8.1 样式处理
-    css-loader：处理css中的@import和url这样的外部链接
-    style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里
-    less-loader：把less编译成css
-8.2 手写实现
+### 9.url-loader
+ 1 样式处理  
+    css-loader：处理css中的@import和url这样的外部链接  
+    style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里  
+    less-loader：把less编译成css  
+ 2 手写实现  
 ```js
 // less-loader
 let {getOptions} = require('loader-utils')
