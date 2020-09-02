@@ -127,3 +127,39 @@ function loader(content, inputSourceMap) {
 loader.row = true
 module.exports = loader
 ```
+
+### 6.sourcemap
+6.1 sourcemap 是为了解决开发代码与实际打包后运行代码不一致时，帮助我们debug到原始代码到技术
+6.2 webpack 通过配置可以自动实现sourcemap功能，map文件是一种对应编译文件和源文件到方法
+    可配置为：source-map / eval-source-map / cheap-module-eval-source-map / cheap-eval-source-map / eval / cheap-source-map / cheap-module-source-map
+6.3 关键字识别：eval-eval执行，source-map - 生成.map文件，cheap-不包含列信息，module-包含loader的sourcemap信息，inline-将.map作为dataURI嵌入打包后的代码，不单独生成.map文件
+
+### 7.url-loader
+7.1 样式处理
+    css-loader：处理css中的@import和ur这样的外部链接
+    style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里
+    less-loader：把less编译成css
+7.2 url-loader是基于file-loader的，多一个功能：如果图片或者文件的大小【小于指定阀值】就不再拷贝文件而是变成一个base64字符串
+7.3 手写实现
+```js
+let {getOptions} = require('loader-utils')
+let mime = require('mime')
+function loader(source){
+  let options = getOptions(this)
+  let {limit=16*1024, fallback='file-loader', filename="'[hash].[ext]'"} = options
+  if(limit) {
+    limit = parseFloat(limit)
+  }
+  console.log('this.resourcePath', this.resourcePath) // 这个资源的绝对路径
+  let mimeType = mime.getType(this.resourcePath)
+  if(limit && source.length<limit) { // base64
+    let base64Str = `data:${mimeType};base64,${source.toString('base64')}`
+    return `module.exports=${JSON.stringify(base64Str)}`
+  } else { // 走fileloader 加载文件
+    let fileLoader = require(fallback||'file-loader')
+    return fileLoader.call(this,source)
+  }
+}
+loader.row = true // 不然让webpack把源文件转成字符串，true-源文件以buffer（字节数组）返回，false-源文件以字符串返回
+module.exports = loader
+```

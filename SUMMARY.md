@@ -8,6 +8,7 @@
     * [概述](webpack/summary.md)
     * [coding](webpack/codding.md)
     * [源码解析](webpack/webpack.md)
+    * [配置](webpack/webpack.config.md)
 
 ---
 
