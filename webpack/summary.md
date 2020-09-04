@@ -194,3 +194,5 @@ function loader(source){
 }
 module.exports = loader
 ```
+
+### 10.url-loader
