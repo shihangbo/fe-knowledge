@@ -195,4 +195,23 @@ function loader(source){
 module.exports = loader
 ```
 
-### 10.url-loader
+### 10.webpack-pitch
+1.loader的返回值有两种  
+  1.一种是返回一个js模块化的代码 module.exports = 'xx'; 可以作为最左边的loader  
+  2.其他就是返回任意内容如css样式语句，图片二进制buffer等; 不可以作为最左边的loader
+  备注：webpack要求，不管哪个模块，最终都要返回一个js代码块，因为webpack本身就是一个把任意资源转成js模块的工具  
+2.webpack执行的时候，“从左往右，从上往下”依次执行loader的pitch方法，然后“从右往左，从下往上”依次执行loader的loader方法；
+
+### 11.loader-runner
+1.loader类型 = post(后置) + inline(内联) + normal(正常) + pre(前置)
+2.特殊配制
+  -! : 不要前置和普通loader
+  !  : 不要普通loader
+  !! : 只要内联loader
+
+### 12.css-loader
+1.用来处理css中 @import 和 url 这样的外部资源的；
+
+## webpack插件机制
+### 12.tapable
+1.
