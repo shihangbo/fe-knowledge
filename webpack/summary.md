@@ -213,5 +213,29 @@ module.exports = loader
 1.用来处理css中 @import 和 url 这样的外部资源的；
 
 ## webpack插件机制
+1.webpack的插件机制  
+  1.创建：webpack在其内部对象上创建钩子函数；  
+  2.注册：插件将自己的方法注册到对应钩子上，交给webpack；  
+  3.调用：webpack在编译过程中，会适时的触发相应钩子，从而触发插件的方法；  
+2.webpack本质是一种事件流的机制，他的工作流程就是将各个插件串联起来，而实现这一切的核心就是Tapable，webpack中最核心的负责编译的Compiler和负责创建bundle的Compilation都是Tapable的实例；  
+3.通过事件，注册和监听，触发webpack生命周期中的函数方法；
+```js
+const {
+  SyncHook,               // 同步
+  SyncBailHook,           // 熔断，遇到第一个结果 result!==undefiend 则返回，不再继续执行
+  SyncWaterfallHook,      // 瀑布，上一个执行的返回作为下一个执行的参数
+  SyncLoopHook,           // 循环
+  AsyncParallelHook,      // 并行
+  AsyncParallelBailHook,
+  AsyncSeriesHook,        // 串行
+  AsyncSeriesBailHook,
+  AsyncSeriesWaterfallHook,
+} = require('tabable')
+```
+
 ### 12.tapable
-1.
+1.basic ： 按顺序依次执行；  
+2.bail  ： 熔断，遇到第一个结果 result!==undefiend 则返回，不再继续执行；  
+3.waterfall ：瀑布，上一个事件函数的结果 result!==undefined 则result会作为后一个事件函数的第一个参数，继续执行；  
+4.loop  ： 循环执行事件函数，直到所有函数的执行结果 result===undefined
+  
