@@ -239,3 +239,4 @@ const {
 3.waterfall ：瀑布，上一个事件函数的结果 result!==undefined 则result会作为后一个事件函数的第一个参数，继续执行；  
 4.loop  ： 循环执行事件函数，直到所有函数的执行结果 result===undefined
   
+  
