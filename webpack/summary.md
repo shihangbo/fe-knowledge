@@ -239,4 +239,33 @@ const {
 3.waterfall ：瀑布，上一个事件函数的结果 result!==undefined 则result会作为后一个事件函数的第一个参数，继续执行；  
 4.loop  ： 循环执行事件函数，直到所有函数的执行结果 result===undefined
   
-  
+### 13.webpack_ast 抽象语法树 abstract syntax tree
+1.webpack 和 lint 等很多等工具和库的核心都是通过 abstract syntax tree 抽象语法树这个概念来实现对代码的检查、分析等操作的；  
+2.抽象语法树的用途  
+  2.1代码语法的检查、代码风格的检查、代码的格式化、代码的高亮、代码错误提示、代码自动不全等； 
+    如jslint、jshint对代码错误或风格等检查，发现一些潜在的错误  
+    ide的错误提示、格式化、高亮、自动补全等  
+  2.2带啊吗混淆压缩  
+    uglifyjs2等  
+  2.3优化变更代码，改变代码结构使达到想要的结构  
+    代码打包工具webpack、rollup等  
+    commonjs、amd、cmd、umd等代码规范之间的转化  
+    coffeescript、typescript、jsx等转化为原生js  
+3.抽象语法树定义
+  3.1这些工具等原理都是通过 javascript parse 把代码转化为一颗抽象语法树ast，这颗树定义了代码的结构，通过操纵这颗树，我们可以精准的定位到声明语句、赋值语句、运算语句等等，实现对代码的分析、优化、变更等操作；  
+  3.2如图展示：../assets/ast.png  
+4.javascript parse  
+  4.1javascript parse把js源码转化为抽象语法树的解析器；  
+  4.2浏览器会把js源码通过js解析器转为抽象语法树，再进一步转化为字节码或直接生成机器码；  
+  4.3浏览器实现的js引擎，都会有自己的抽象语法树格式：chrome的v8引擎，firefox的spiderMonkey引擎；  
+5.常用的 javascript parse  
+  5.1 esprima
+  5.2 traceur
+  5.3 acorn
+5.课程：实现源码 -> ast语法树 -> 源码
+  5.1通过 esprima 把源码转化为ast
+  5.2通过 estraverse 遍历并更新ast
+  5.3通过 escodegen 将ast重新生成源码
+  5.4工具，astexplorer ast的可视化工具
+6.实现babel插件
+7.实现js引擎
