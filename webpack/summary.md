@@ -259,13 +259,29 @@ const {
   4.2浏览器会把js源码通过js解析器转为抽象语法树，再进一步转化为字节码或直接生成机器码；  
   4.3浏览器实现的js引擎，都会有自己的抽象语法树格式：chrome的v8引擎，firefox的spiderMonkey引擎；  
 5.常用的 javascript parse  
-  5.1 esprima
-  5.2 traceur
-  5.3 acorn
-5.课程：实现源码 -> ast语法树 -> 源码
-  5.1通过 esprima 把源码转化为ast
-  5.2通过 estraverse 遍历并更新ast
-  5.3通过 escodegen 将ast重新生成源码
-  5.4工具，astexplorer ast的可视化工具
-6.实现babel插件
-7.实现js引擎
+  5.1 esprima  
+  5.2 traceur  
+  5.3 acorn  
+5.课程：实现源码 -> ast语法树 -> 源码  
+  5.1通过 esprima 把源码转化为ast  
+  5.2通过 estraverse 遍历并更新ast  
+  5.3通过 escodegen 将ast重新生成源码  
+  5.4工具，astexplorer ast的可视化工具  
+6.实现babel插件  
+7.实现js引擎  
+
+### 13.编译器
+1.编译器分为三个阶段
+  1.1解析Parsing，解析是将最初原始的代码转换为一种更加抽象的表示，即ast；  
+  1.2转换Transformation，转换将对这个抽象的表示做一些处理，让他能做到编译器期望他做到的事情；  
+  1.3代码生成Code Generation，接受处理之后的代码表示，然后把它转换成新的的代码；  
+2.编译器实现
+  2.1词法分析器 tokennizer ：while循环字符串，匹配对应的语言符号如小括号(，方法名add等
+  2.2词法分析器 Parser
+  2.3遍历器
+  2.4转换ast
+  2.5代码生成
+  2.6打包
+3.对应课程webpack，webpack_ast_parser
+
+### 13.编译器
