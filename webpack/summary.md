@@ -352,3 +352,19 @@ class DonePlugin{
 module.exports = DonePlugin
 ```
   6.5对应webpack-plugin的课程webpack；  
+
+### 15.webpack_hand
+1.开始实现webpack源码：45～58；  
+
+### 16.webpack优化
+1.缩小范围
+2.noParse
+3.DefinePlugin
+4.IgnorePlugin
+5.区分环境变量
+6.对图片进行压缩优化
+7.日志优化
+8.日志输出
+9.费时分析
+10.webpack-bundle-analyzer
+11.libraryTarget和library
