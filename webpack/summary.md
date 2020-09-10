@@ -275,13 +275,80 @@ const {
   1.1解析Parsing，解析是将最初原始的代码转换为一种更加抽象的表示，即ast；  
   1.2转换Transformation，转换将对这个抽象的表示做一些处理，让他能做到编译器期望他做到的事情；  
   1.3代码生成Code Generation，接受处理之后的代码表示，然后把它转换成新的的代码；  
-2.编译器实现
-  2.1词法分析器 tokennizer ：while循环字符串，匹配对应的语言符号如小括号(，方法名add等
-  2.2词法分析器 Parser
-  2.3遍历器
-  2.4转换ast
-  2.5代码生成
-  2.6打包
-3.对应课程webpack，webpack_ast_parser
+2.编译器实现  
+  2.1词法分析器 tokennizer ：while循环字符串，匹配对应的语言符号如小括号(，方法名add等  
+  2.2词法分析器 Parser  
+  2.3遍历器  
+  2.4转换ast  
+  2.5代码生成  
+  2.6打包  
+3.对应课程webpack，webpack_ast_parser  
 
-### 13.编译器
+### 14.plugin
+1.概述  
+  1.1插件向第三方开发者提供了webpack引擎中完整的能力。实用阶段式的构建回调，开发者可以引入他们自己的行为到webpack构建流程中，创建插件比创建loader更加高级，因为你将需要理解一些webpack底层的内部特性来做相应的钩子；  
+2.为什么需要一个插件  
+  2.1webpack基础配置无法满足需求；  
+  2.2插件几乎能够任意更改webpack编译结果；  
+  2.3webpack内部也是通过大量内部插件实现的；  
+3.可以加在插件的常用对象  
+  Compiler  
+  COmpilation 代表一次编译  
+  Module Factory  
+  Parser  
+  Template  
+4.创建插件  
+  4.1webpack插件由以下组成  
+    4.1.1一个javascript命名函数；  
+    4.1.2在插件函数的prototype上定义一个apply方法；  
+    4.1.3制定一个绑定到webpack自身的事件钩子；  
+    4.1.4处理webpack内部实例的特定数据；  
+    4.1.5功能完成后调用webpack提供的回调；  
+5.Compiler 和 Compilation   
+  5.1在插件开发中最重要的两个资源就是compiler 和 compilation 对象。理解他们的角色是拓展webpack引擎重要的第一步；
+  5.2compiler 对象代表了完整的webpack环境配置。这个对象在启动webpack时被一次性建立，并配置好所有可操作的设置，包括options，loader和plugin。当在webpack环境应用一个插件时，插件将受到此compiler对象的引用。可以用来访问webpack的主环境；  
+  5.3compilation 对象代表了一次资源版本构建。当运行webpack开发环境中间件时，每当检测到一个文件变化，就会创建一个新的compilation，从而生成一组新的编译资源。一个compilation对象表现了当前的模块资源、编译生成资源、变化的文件、以及被跟踪以来的状态信息。compilation 对新阿贵也提供了很多关键是时机回调，以供插件做自定义处理是选择使用；  
+6.基本插件架构  
+  6.1概述  
+    6.1.1插件是由【具有apply方法的prototype对象】所实例化出来的；  
+    6.1.2这个apply方法在安装插件时，会被webpack compiler调用一次；  
+    6.1.3apply方法可以接受一个webpack compiler对象的引用，从而可以在回调函数中访问到 compiler对象；  
+  6.2webpack源码使用插件的代码  
+```js
+if(options.plugins && Array.isArray(options.plugins)){
+  for(const plugin of options.plugins){
+    plugin.apply(compiler)
+  }
+}
+```
+  6.3用户使用插件代码  
+```js
+let DonePlugin = require('DonePlugin')
+module.exports = {
+  mode: '',
+  entry: '',
+  output: {},
+  module: {},
+  plugins: [
+    new DonePlugin()
+  ]
+}
+```
+  6.4Compiler插件  
+    6.3.1done: new AsyncSeriesHook(["stats"])  
+    6.3.2自定义同步插件  
+```js
+class DonePlugin{
+  constructor(options){
+    this.options = options
+  }
+  // compiler创建后，会挂在所有的钩子 new DonePlugin().apply(compiler)
+  apply(compiler){
+    compiler.hooks.done.tap('DonePlugin',(stats)=>{
+      console.log('hello ', this.options.name)
+    })
+  }
+}
+module.exports = DonePlugin
+```
+  6.5对应webpack-plugin的课程webpack；  
