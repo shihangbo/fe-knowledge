@@ -385,8 +385,8 @@ module.exports = {
   }
 }
 ```
-2.noParse
-  2.1module.noParse 字段，用于配置那些模块文件的内容不需要进行解析；
+2.noParse  
+  2.1module.noParse 字段，用于配置那些模块文件的内容不需要进行解析；  
 ```js
 module.export = {
   module:{
@@ -398,8 +398,8 @@ module.export = {
   }
 }
 ```
-3.DefinePlugin
-  3.1DefinePlugin 创建一些在编译是可以配置的全局常量；
+3.DefinePlugin  
+  3.1DefinePlugin 创建一些在编译是可以配置的全局常量；  
 ```js
 let webpack = require('webpack')
 new webpack.DefinePlugin({
@@ -411,16 +411,111 @@ new webpack.DefinePlugin({
 })
 ```
 4.IgnorePlugin
-  4.1
-5.区分环境变量
-6.对图片进行压缩优化
-7.日志优化
-8.日志输出
-9.费时分析
-10.webpack-bundle-analyzer
-11.libraryTarget和library
+  4.1用于忽略某些特定的模块，让webpack不把这些特定的模块打包进去；  
+```js
+import moment from 'moment'
+console.log(moment)
+
+// 忽略掉moment模块中的locale目录
+new webpack.IgnorePlugin(/^\.\/locale/,/moment$/)
+// 参数1: 匹配引入模块路径的正则表达式；
+// 参数2: 匹配模块对应的上下文；
+```
+5.区分环境变量  
+  5.1环境差异  
+    5.1.1生产环境  
+      ·分离common css文件，以便多个文件进行共享  
+      ·压缩代码/图片  
+      ·混淆  
+    5.1.2开发环境  
+      ·生成sourcemap文件  
+      ·打印debug信息  
+      ·需要live reload 或者 hot reload功能
+  5.2webpack 4.x引入了 mode 概念
+
+```js
+const TerserWebpackPlugin = require('terser-webpack-plugin')
+const OptimizeCssWebpackPlugin = require('optimize-css-webpack-plugin')
+module.exports = (env,argv) => ({
+  //配置优化策略
+  optimization:{
+    //如果是生产模式
+    minimizer:argv.mode==='production'
+      ? [
+          new TerserWebpackPlugin({
+            parallel:true, // 启动多进程并行压缩js
+            cache:true,
+          }),
+          new OptimizeCssWebpackPlugin({
+
+          })
+        ]
+      : []
+  }
+})
+```
+6.对图片进行压缩优化  
+  6.1 webpack插件 image-webpack-loader  
+7.日志优化  
+  7.1 webpack插件 friendly-errors-webpack-plugin  
+    ·success 成功的提示  
+    ·warning 警告的提示  
+    ·error   报错的提示  
+```js
+  const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
+
+  stats: 'verbose',
+  plugin:[
+    new FriendlyErrorsWebpackPlugin()
+  ]
+```
+8.日志输出  
+9.分析时间 - 费时分析  
+  9.1webpack插件 speed-measure-webpack-plugin  
+```js
+  const SpeedMeasureWebpackPlugin = require('speed-measure-webpack-plugin')
+  const smv = new SpeedMeasureWebpackPlugin()
+  module.exports = smv.warp({...})
+```
+10.分析空间 - webpack-bundle-analyzer  
+
+11.libraryTarget和library  
+  11.1outputlibrarytarget  
+    ·当webpack去构建一个可以被其他模块导入的库时需要用到他们  
+    ·output.library 配置导出库的名字  
+    ·output.libraryExport 配置当前模块中哪些子模块需要被导出  
+    ·output.libraryTarget 配置以何种方式导出库  
+      ·var       : 只能通过script标签引入，且以全局变量的形式使用  
+      ·commonjs  : 只能以commonjs的规范引入和使用  
+      ·amd       : 只能以amd的规范引入和使用  
+      ·umd       : 可以使用script标签、commonjs、amd引入  
+```js
+  module.exports ={
+    output:{
+      library: 'calculate',
+      libraryTarget: 'var'
+    }
+  }
+```
 12.polyfill
-13.purgecss-webpack-plugin
+  12.1概述：babel负责语法转换，如将es6语法转成es5语法。但如果有些对象、方法浏览器本身不支持，比如：  
+    ·全局对象：Promise, WeabMap...  
+    ·全局静态函数：Array.from, Object.assign...  
+    ·实例方法：Array.prototype.includes...  
+  12.2引用方式(三种)  
+```js
+  require('@babel-polyfill')
+  import('@babel-polyfill')
+  module.exports = {
+    entry: ['@babel-polyfill', './index.js']
+  }
+```
+  12.3polyfill-service  
+    <script src='polyfill.min.js'></script>  
+
+13.purgecss-webpack-plugin  
+  13.1用于去除未使用的css，一般与glob配合使用，必须与 mini-css-extract-plugin 配合使用，paths路径是绝对路径  
+
 14.DLL
 15.多进程处理
 16.CDN
@@ -428,3 +523,16 @@ new webpack.DefinePlugin({
 18.代码分割
 19.开启Scope Hoisting
 20.利用缓存  
+21.babel  
+  21.1概述：是一个转换工具，把es6转换成es5代码  
+  21.2只能转换js代码，不能转换api，如Iterator，Generator，Set，Map，Proxy，Reflect，Symble，Promise等全局对象，以及在全局对象上的方法Object.assign等。  
+  21.3官方给出 bable-polyfill 和 babel-runtime 两种解决方案来解决这种全局对象或全局对象方法不足的问题；  
+  21.4bable-polyfill适合在业务项目使用，babel-runtime适合在组件和类库项目中使用  
+  21.5bable-polyfill  
+    ·优点：使用简单（三种方式引用）  
+    ·缺点：体积大（300k+），污染全局变量或者对象中的方法  
+  21.6babel-runtime：babel提供单独的包babel-runtime用以提供编译模块的工具函数  
+    ·优点：按需引用，import Promise from 'babel-runtime/core-js/promise'  
+    ·缺点：手动import引入，coding的时候需要时时注意  
+  21.7babel-plugin-transform-runtime  
+    ·优点：帮助我们避免手动引入import，并且还做公用方法的抽离  
