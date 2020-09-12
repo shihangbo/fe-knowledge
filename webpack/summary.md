@@ -357,10 +357,61 @@ module.exports = DonePlugin
 1.开始实现webpack源码：45～58；  
 
 ### 16.webpack优化
-1.缩小范围
+1.缩小范围  
+  1.1wepack普通模块查找：  
+    1.1.1用户引用：用户引入一个模块 require('lodash')；  
+    1.1.2查找文件：在当前node_modules文件夹下找到 lodash 文件夹中的 package.json 文件；  
+    1.1.3查找字段：默认main字段对应的路径，当没有main字段的时候，查找index.js文件；  
+    1.1.4加载文件：对main字段对应的路径的文件进行加载；  
+```js
+module.exports = {
+  // 普通模块查找，webpack需要经过非常复杂的过程，指定路径会极大的缩短查找过程
+  resolve:{
+    // 别名设置，如import一个第三方包
+    alias:{
+      'bootstrap':path.resolve(__dirname,'node_modules/bootstrap/dist/css/bootstrap.css')
+    },
+    // 指定webpack只查找当前 node_modules，以减少无谓的查找过程
+    modules:[path.resolve(__dirname,'node_modules')],
+    // 默认情况下，package.json文件按照文中的 main 字段的文件名被查找到
+    mainFields:['browser','main'],
+    // 当目录下没有 package.json文件时，默认使用目录下的 index.js这个文件
+    mainFiles:['index']
+  },
+  // loader模块查找，webpack需要经过非常复杂的过程，指定路径会极大的缩短查找过程
+  resolveLoader:{
+    alias:{},
+    modules:[]
+  }
+}
+```
 2.noParse
+  2.1module.noParse 字段，用于配置那些模块文件的内容不需要进行解析；
+```js
+module.export = {
+  module:{
+    noParse: /jquery|lodash/,
+    // 或者使用函数
+    noParse(content){
+      return /jquery|lodash/.test(content)
+    }
+  }
+}
+```
 3.DefinePlugin
+  3.1DefinePlugin 创建一些在编译是可以配置的全局常量；
+```js
+let webpack = require('webpack')
+new webpack.DefinePlugin({
+  VERSION:1, //会被转成字符串
+  EXPRESSION:"1+2", //字符串，会被当成代码片段来执行 eval("1+2")
+  COPYRIGHT:{ //对象
+    AUTHOR:JSON.stringify('watson')
+  }
+})
+```
 4.IgnorePlugin
+  4.1
 5.区分环境变量
 6.对图片进行压缩优化
 7.日志优化
@@ -368,3 +419,12 @@ module.exports = DonePlugin
 9.费时分析
 10.webpack-bundle-analyzer
 11.libraryTarget和library
+12.polyfill
+13.purgecss-webpack-plugin
+14.DLL
+15.多进程处理
+16.CDN
+17.Tree Shaking
+18.代码分割
+19.开启Scope Hoisting
+20.利用缓存  
