@@ -515,13 +515,151 @@ module.exports = (env,argv) => ({
 
 13.purgecss-webpack-plugin  
   13.1用于去除未使用的css，一般与glob配合使用，必须与 mini-css-extract-plugin 配合使用，paths路径是绝对路径  
+14.DLL  
+15.多进程处理  
+  15.1 thread-load : 把这个loader放在其他loader之前使用；  
+```js
+  module.exports = {
+    module: {
+      rules:[
+        {
+          test: /\.js$/,
+          use:[
+            {
+              loader:'thead-loader',
+              options:{
+                worker:3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+```
+16.CDN  
+  16.1HTML文件不缓存，放在自己服务器上，关闭自己服务器缓存，静态资源的URL变成指向CDN服务器的地址  
+  16.2静态的js、css、图片等文件开启CDN和缓存，文件名带上HASH值  
+  16.3为了并行加载不阻塞，把不同的静态资源分配到不同的CDN服务器上  
+  16.4配置多个域名后会增加域名解析时间，解决办法“预解析域名”，<link rel='dns-prefetch' url='www.watson.com/'></link>，即在对应HTML文件头部加上link去预解析域名，以降低域名解析带来的延迟  
+  16.5接入CDN  
+```js
+  module.exports = {
+    output:{
+      path:path.join(__dirname,'dist),
+      filename:'[name]_[hash:8].js',
+      publicPath:'CDN URL/'
+    }
+  }
+```
+  16.6文件指纹  
+    ·hash：每次webpack构建生成一个唯一的hash值，全局唯一，各文件共用这个hash值  
+      ·缺点：当修改一个文件的时候，重新进行webpack打包，【所有文件】的hash值都会改变  
+    ·chunkhash：根据chunk生成的hash值，来源于同一个chunk的hash值一样  
+      ·优点：当修改一个文件的时候，重新进行webpack打包，只有【同一个代码块】chunk的文件的hash值会改变，其他文件保持不变  
+    ·contenthash：根据内容生成的hash值  
+      .优点：修改文件重新webpack打包，只有修改文件的hash改变，其他文件保持不变  
+```js
+  //文件指纹 推荐配置
+  //解读1 性能：hash > chunkhash > contenthash, contenthash文件级的，读文件
+  //解读2 稳定性：contenthash > chunkhash > hash
+  module.exports={
+    output:{
+      filename:'[name]_[hahs].js',
+      chunkFilename:'[name]_[chunkhash].js',
+    },
+    plugins:[
+      new MiniCSSExtractPlugin({
+        filename:'[name]_[contenthash].css'
+      })
+    ]
+  }
 
-14.DLL
-15.多进程处理
-16.CDN
-17.Tree Shaking
-18.代码分割
-19.开启Scope Hoisting
+```
+17.Tree Shaking  
+  17.1概述：一个模块有多个方法，只要其中某个方法使用到了，则整个文件就会被打包到bundle里面去，Tree Shaking就是只把用到到方法打包到bundle里面，没有用到的方法会在uglify阶段查处掉  
+  17.2原理：es6模块的 import 关键字  
+```js
+  //Tree Shaking 最佳实践 生产模式下
+  module.exports={
+    mode:'production',
+    devtool:false,
+    module:{
+      rules:[
+        {
+          test:/\.js$/,
+          // 配置{moduls:false}，不让bable转换模块，因为只有es6模块才能实现Tree Shaking 
+          use:[
+            {
+              loader:'babel-loader',
+              options:{
+                presets:[
+                  ['@babel/preset-env',{'modules':false}],
+                  '@babel/preset-react'
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+```
+  17.3哪些代码会被优化掉  
+    ·没有导入或使用  
+    ·代码不可达，不会被执行  
+    ·代码的结果没有人用  
+    ·代码里只写不读的变量  
+    
+18.代码分割  
+  18.1目标：1.抽离相同代买到一个共享块；2.脚本懒加载，是初始下载代码更小；  
+  如下三个方法实现  
+  18.2Entry Point：配置入口文件设置  
+    ·优点：简单
+    ·缺点：如果入口文件之间包含相同模块，这些相同模块会被引入各个bundle中  
+          不够灵活，不能将核心应用程序逻辑进行动态查分代码  
+```js
+  entry:{
+    index:'./src/index.js',
+    login:'./src/login.js'
+  }
+```
+  18.3动态导入和懒加载  
+    18.3.1概述：用到什么功能加载这个功能对应到代码，即按需加载，再给单页应用做按需加载的优化时，采用以下原则：
+      ·对网站功能进行划分，每个分类一个chunk  
+      ·首页功能直接加载，其他二级页面按需加载  
+      ·被分割出来的代码需要一个按需加载得时机  
+```js
+  // video.js
+  module.exports='this is video'
+
+  // index.js
+  document.getElementById('video').addEventListener('click',event=>{
+    import('./video.js').then(res=>{
+      console.log(res)
+    })
+  })
+```
+  18.4prefetch 和 preload  
+    18.4.1预先拉去prefetch: 浏览器会在空闲时间下载该模块，且下载时发生在父级chunk加载完成之后  
+```js
+  // index.js
+  import(/*webpackPrefetfch:true*/ './video.js').then(res=>{
+    console.log(res)
+  })
+  // 原理：webpack会生成一个link标签，并将他被添加至页面头部，浏览器进入空间时间就开始加载这个文件 <link rel="prefetch" as="script" href="utilities.js"> 
+```
+    18.4.2预先加载preload：会将资源的下载顺序权重提高，关键数据资源提前下载，不当使用webpackProload也会损害性能  
+      ·异步chunk和父级chunk并行加载，父级chunk加载好了页面就会展示，同时等待异步chunk加载  
+```js
+  // index.js
+  import(/*webpackPreload:true*/ './video.js').then(res=>{
+    console.log(res)
+  })
+  // 原理：webpack会生成一个link标签，并将他被添加至页面头部，浏览器进入空间时间就开始加载这个文件 <link rel="preload" as="script" href="utilities.js"> 
+```
+19.开启Scope Hoisting  
 20.利用缓存  
 21.babel  
   21.1概述：是一个转换工具，把es6转换成es5代码  
@@ -536,3 +674,29 @@ module.exports = (env,argv) => ({
     ·缺点：手动import引入，coding的时候需要时时注意  
   21.7babel-plugin-transform-runtime  
     ·优点：帮助我们避免手动引入import，并且还做公用方法的抽离  
+22.公共资源提取
+
+```js
+module.exports={
+  optimization:{
+    splitChunks:{
+      //代码块分成两类：初始模块，异步模块，
+      chunks:'all',//initial, async, all
+      minSize:30000,//默认值30k，代码块的最小尺寸
+      minChunks:2,//分割之前被引用的次数，阀值
+      maxAsyncRequests:5,//按需加载最大请求数
+      maxInitialRequests:3,//一个入口的最大并行请求数量
+      name:true,//打包后的名称，默认是chunk的名字，pageA～pageB～pageC
+      automaticNamedelimiter:'~',//默认分隔符
+      cacheGroups:{
+        vendors:{
+          chunks:'initial',//分割同步代码块
+          test:/node_modules/,//模块正则
+          priority:-10//一个代码块可能有多个缓存组，会被抽取到优先级比较高的缓存组
+        }
+      }
+
+    }
+  }
+}
+```
