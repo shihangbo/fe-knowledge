@@ -660,7 +660,57 @@ module.exports = (env,argv) => ({
   // 原理：webpack会生成一个link标签，并将他被添加至页面头部，浏览器进入空间时间就开始加载这个文件 <link rel="preload" as="script" href="utilities.js"> 
 ```
 19.开启Scope Hoisting  
+  19.1原理：将所有的模块按照引用顺序放在一个函数作用域里  
+      作用：体积更小，运行更快  
+      这个功能在production模式默认开启   
+      webpack3新推出的功能   
+```js
+//hello.js
+module.exports='watson'
+
+//index.js
+import str from './hello.js'
+console.log(str)
+
+//查看打包后的结果
+var hello = ('hello')
+console.log(hello)
+```
 20.利用缓存  
+  20.1webpack利用缓存有以下几个思路：  
+    ·babel-loader开启缓存  
+    ·使用cache-loader  
+    ·使用hard-source-webpack-plugin  
+  20.2babel-loader  
+    babel在转译js过程中耗能较高，将babel执行的结果缓存起来，当重新打包构建时尝试读取缓存，从而提高打包构建速度，降低消耗  
+```js
+  {
+    test:/\.js$/,
+    exclude:/node_modules/,
+    use:[
+      {
+        loader:'babel-loader',
+        options:{
+          cacheDirectory:true
+        }
+      }
+    ]
+  }
+```
+  20.3cache-loader
+    ·在一些性能开销加大对的leader之前添加此laoder，将结果缓存到洗盘里  
+  20.4hard-source-webpack-plugin
+    ·为模块提供了中间缓存，缓存默认存放路径 node_modelus/.cache/hard-source  
+    ·配置之后，首次构建时间不会大的变化，从第二次开始，构建时间可以减少80%左右  
+    ·webpack5中已经内置该插件  
+```js
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+module.exports={
+  plugins:[
+    new HardSourceWebpackPlugin()
+  ]
+}
+```
 21.babel  
   21.1概述：是一个转换工具，把es6转换成es5代码  
   21.2只能转换js代码，不能转换api，如Iterator，Generator，Set，Map，Proxy，Reflect，Symble，Promise等全局对象，以及在全局对象上的方法Object.assign等。  
@@ -675,7 +725,11 @@ module.exports = (env,argv) => ({
   21.7babel-plugin-transform-runtime  
     ·优点：帮助我们避免手动引入import，并且还做公用方法的抽离  
 22.公共资源提取
-
+  22.1webpack会基于以下条件自动分割代码块：  
+    ·新的代码块被共享或者来自node_modules文件夹  
+    ·新的代码块大于30kb（在min+giz之前）  
+    ·按需加载代码块的请求数量应该<=5  
+    ·页面初始化是加载代码块的请求数量应该<=3  
 ```js
 module.exports={
   optimization:{
@@ -691,12 +745,21 @@ module.exports={
       cacheGroups:{
         vendors:{
           chunks:'initial',//分割同步代码块
-          test:/node_modules/,//模块正则
+          test:/node_modules/,//模块正则，node_modules里面的会被抽去到vendors中
           priority:-10//一个代码块可能有多个缓存组，会被抽取到优先级比较高的缓存组
+        },
+        commons:{
+          chunks:'initial',
+          minSize:0,
+          minChunks:2,
+          priority:-20,
+          reuseExistingChunk:true,//如果该chunk引用了已经被抽取的chunk，则会直接引用chunk，不再重复打包
         }
       }
-
     }
   }
 }
+
+// common~pageA～pageB～pageC.js   提取自定义的公用的chunk，如工具方法js
+// vendors~pageA～pageB～pageC.js  提取node_modules中的公用chunk，如jquery.js
 ```
