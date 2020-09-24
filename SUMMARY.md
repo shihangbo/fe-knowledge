@@ -13,8 +13,8 @@
     * [概述](几何图形/summary.md)
     * [g2]
 * [vue3组件](vue3/README.md)
-    * [概述](vue3/summary.md)
-
+    * [vue3特性](vue3/summary.md)
+    * [vue3设计过程](vue3/vue3.md)
 ---
 
 * [JavaScript](part1/README.md)
