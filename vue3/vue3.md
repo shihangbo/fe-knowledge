@@ -69,4 +69,65 @@ const { redner } = createRenderer({
     5.1.2 redner函数把vue组件和vDOM渲染到原生对象上面去；  
 
 ### 6.新功能
-  6.1 响应式数据监听api  
+  6.1 响应式数据监听api - observable  
+```js
+import {observable,effect} from 'vue'
+// observable注册为一个响应式的数据，用于实现跨组件的状态共享
+const state = observable({
+  count:0
+})
+// effect函数依赖响应式数据，当数据变更的时候，effect被重新执行
+effect(()=>{
+  console.log(`count is: ${state.count}`)
+})
+state.count++
+```
+  6.2 轻松排查组件更新的触发原因 - renderTriggered  
+```js
+const Comp = {
+  render(props){
+    return h('div',props.count)
+  },
+  renderTriggered(event){
+    debugger
+  }
+}
+```
+  6.3 更好的ts支持，包括原生的Class和TSX  
+```js
+interface HelloProps{
+  text?:string
+}
+class Hello extends Component<HelloProps>{
+  count=0
+  render(){
+    return <div>
+      {this.count}
+      {this.$props.text}
+    </div>
+  }
+}
+```
+  6.4 更好的警告信息  
+    6.4.1 组件堆栈包含函数是组件  
+    6.4.2 可以直接在警告信息中查看组件的props  
+    6.4.3 在更多的警告中提供组件堆栈信息  
+  
+  6.5 Experimental - Hooks API  
+    6.5.1 作为一种逻辑复用机制，大概率取代 mixins  
+    6.5.2 github项目 Vue Hooks  
+  
+  6.6 Experimental - Time Slicing Support  
+    6.6.1 解决重js计算的一个方案(浏览器是单线程的，大量计算会block浏览器的整个运行)：通过每16毫秒(一桢)，就yield给browser，让用户的新事件重新进来触发更新，可能导致的一些之前需要做的更新被invalid，也就不需要去做，省去一些不必要的操作  
+```js
+function block(){
+  const s = performance.now()
+  while(performance.now() - s < 1){
+    // block
+  }
+}
+```
+
+  6.7 关于IE  
+    6.7.1 会有一个专门的版本，在IE11重自动降级为旧的getter/setter机制，并对IE中不支持的用法给出警告  
+    
