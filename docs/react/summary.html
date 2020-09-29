@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>几何图形 · fe knowledge</title>
+        <title>学习文档 · fe knowledge</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="summary.html" />
+    <link rel="next" href="../模块/" />
     
     
-    <link rel="prev" href="../webpack/webpack.config.html" />
+    <link rel="prev" href="./" />
     
 
     </head>
@@ -218,9 +218,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.4" data-path="./">
+        <li class="chapter " data-level="1.4" data-path="../几何图形/">
             
-                <a href="./">
+                <a href="../几何图形/">
             
                     
                     几何图形
@@ -232,9 +232,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.4.1" data-path="summary.html">
+        <li class="chapter " data-level="1.4.1" data-path="../几何图形/summary.html">
             
-                <a href="summary.html">
+                <a href="../几何图形/summary.html">
             
                     
                     概述
@@ -308,9 +308,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.6" data-path="../react/">
+        <li class="chapter " data-level="1.6" data-path="./">
             
-                <a href="../react/">
+                <a href="./">
             
                     
                     react
@@ -322,9 +322,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.6.1" data-path="../react/summary.html">
+        <li class="chapter active" data-level="1.6.1" data-path="summary.html">
             
-                <a href="../react/summary.html">
+                <a href="summary.html">
             
                     
                     学习文档
@@ -454,7 +454,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >几何图形</a>
+        <a href=".." >学习文档</a>
     </h1>
 </div>
 
@@ -469,7 +469,74 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="&#x51E0;&#x4F55;&#x56FE;&#x5F62;">&#x51E0;&#x4F55;&#x56FE;&#x5F62;</h1>
+                                <h1 id="vue3&#x7684;&#x8BBE;&#x8BA1;&#x8FC7;&#x7A0B;">vue3&#x7684;&#x8BBE;&#x8BA1;&#x8FC7;&#x7A0B;</h1>
+<h3 id="1react-&#x548C;-react-dom">1.react &#x548C; react-dom</h3>
+<p>  1.1 react&#x5143;&#x7D20; &#x7684;&#x672C;&#x8D28;&#x662F;&#x4E00;&#x4E2A;&#x666E;&#x901A;&#x7684;js&#x5BF9;&#x8C61;<br>  1.2 react-dom&#x4F1A;&#x4FDD;&#x8BC1;&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x7684;DOM&#x4E0E;react&#x751F;&#x6210;&#x7684;js&#x5143;&#x7D20; &#x4FDD;&#x6301;&#x4E00;&#x81F4;<br>  1.3 react&#x5143;&#x7D20; &#x90FD;&#x662F;&#x4E0D;&#x53EF;&#x53D8;&#x5BF9;&#x8C61;<br>  1.4 react&#x5143;&#x7D20; &#x53EA;&#x4F1A;&#x66F4;&#x65B0;&#x5FC5;&#x8981;&#x7684;&#x90E8;&#x5206;&#xFF0C;dom diff  </p>
+<pre><code class="lang-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">createElement</span>(<span class="hljs-params">type,config={},...children</span>)</span>{
+  <span class="hljs-keyword">return</span> {
+    type,
+    props:{...config,children}
+  }
+}
+<span class="hljs-keyword">var</span> element = createElement(<span class="hljs-string">&apos;h1&apos;</span>,{id:<span class="hljs-string">&apos;title&apos;</span>},<span class="hljs-string">&apos;hello&apos;</span>,createElement(<span class="hljs-string">&apos;h2&apos;</span>,<span class="hljs-literal">null</span>,<span class="hljs-string">&apos;world&apos;</span>))
+<span class="hljs-built_in">console</span>.log(element)
+</code></pre>
+<h3 id="2jsx&#x8868;&#x8FBE;&#x5F0F;">2.JSX&#x8868;&#x8FBE;&#x5F0F;</h3>
+<p>  2.1 &#x5728;JSX&#x4E2D;&#x4EFB;&#x610F;&#x4F7F;&#x7528;&#x8868;&#x8FBE;&#x5F0F;&#xFF0C;&#x8868;&#x8FBE;&#x5F0F;&#x8981;&#x653E;&#x5728;&#x5927;&#x62EC;&#x53F7;&#x91CC;  </p>
+<pre><code class="lang-js"><span class="hljs-keyword">let</span> name = <span class="hljs-string">&apos;watson&apos;</span>
+<span class="hljs-comment">// &#x5199;&#x6CD5;&#x4E00;</span>
+<span class="hljs-keyword">let</span> element =  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&apos;title&apos;</span>&gt;</span>hello {name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span> <span class="hljs-comment">//jsx - babel - createElement&#x51FD;&#x6570;</span>
+<span class="hljs-comment">// &#x5199;&#x6CD5;&#x4E8C;</span>
+<span class="hljs-keyword">let</span> element = React.createElement(<span class="hljs-string">&apos;h1&apos;</span>,{id:<span class="hljs-string">&apos;title&apos;</span>},<span class="hljs-string">&apos;hello&apos;</span>,createElement(<span class="hljs-string">&apos;h2&apos;</span>,<span class="hljs-literal">null</span>,<span class="hljs-string">&apos;world&apos;</span>)) <span class="hljs-comment">// &#x76F4;&#x63A5;&#x5199;</span>
+</code></pre>
+<h3 id="3&#x7EC4;&#x4EF6;&#x548C;&#x7EC4;&#x4EF6;&#x7684;&#x5C5E;&#x6027;">3.&#x7EC4;&#x4EF6;&#x548C;&#x7EC4;&#x4EF6;&#x7684;&#x5C5E;&#x6027;</h3>
+<p>  3.1 &#x51FD;&#x6570;&#x5F0F;&#x7EC4;&#x4EF6;: &#x4E00;&#x4E2A;&#x51FD;&#x6570;&#xFF0C;&#x63A5;&#x53D7;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x5BF9;&#x8C61;&#xFF0C;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;react&#x5143;&#x7D20;<br>  3.1.1 &#x51FD;&#x6570;&#x7EC4;&#x4EF6;&#x7684;&#x6E32;&#x67D3;&#x539F;&#x7406;  </p>
+<pre><code>1. &#x5C01;&#x88C5;&#x51FD;&#x6570;&#x7EC4;&#x4EF6;&#x7684;&#x5C5E;&#x6027;&#x5BF9;&#x8C61; props  
+2. &#x628A;props&#x4F20;&#x9012;&#x7ED9;Welcome&#x51FD;&#x6570;&#xFF0C;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;React&#x5143;&#x7D20;  
+3. &#x628A;&#x8FD9;&#x4E2A;React&#x5143;&#x7D20;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x865A;&#x62DF;DOM&#x6E32;&#x67D3;&#x5230;&#x771F;&#x5B9E;DOM&#x4E0A;  
+</code></pre><pre><code class="lang-js"><span class="hljs-comment">// &#x5B9A;&#x4E49;</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Welcome</span>(<span class="hljs-params">props</span>)</span>{
+  <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>hello {props.name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+}
+<span class="hljs-comment">// &#x4F7F;&#x7528;</span>
+<span class="hljs-keyword">let</span> ele = <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Welcome</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;watson&quot;</span> /&gt;</span>
+</span></code></pre>
+<p>  3.2 &#x7C7B;&#x7EC4;&#x4EF6;: &#x4E00;&#x4E2A;&#x7C7B;&#xFF0C;&#x9700;&#x8981;&#x4E00;&#x4E2A;render&#x65B9;&#x6CD5;&#xFF0C;render&#x65B9;&#x6CD5;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x5E76;&#x4E14;&#x4EC5;&#x80FD;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x9876;&#x7EA7;react&#x5143;&#x7D20;<br>  3.2.1 &#x7C7B;&#x7EC4;&#x4EF6;&#x7684;&#x6E32;&#x67D3;&#x539F;&#x7406;  </p>
+<pre><code>1. &#x5C01;&#x88C5;&#x7C7B;&#x7EC4;&#x4EF6;&#x7684;&#x5C5E;&#x6027;&#x5BF9;&#x8C61; props  
+2. new Welcome(props)&#xFF0C;&#x521B;&#x5EFA;&#x7C7B;&#x5B9E;&#x4F8B;&#xFF0C;&#x4F20;&#x9012;props&#x8FDB;&#x53BB;&#x5E76;&#x8D4B;&#x503C;&#x7ED9;this.props  
+3. &#x8C03;&#x7528;&#x5B9E;&#x4F8B;&#x7684;render&#x65B9;&#x6CD5;&#xFF0C;&#x5F97;&#x5230;&#x8FD4;&#x56DE;&#x7684;React&#x5143;&#x7D20;  
+4. &#x628A;&#x8FD9;&#x4E2A;React&#x5143;&#x7D20;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x865A;&#x62DF;DOM&#x6E32;&#x67D3;&#x5230;&#x771F;&#x5B9E;DOM&#x4E0A;  
+</code></pre><pre><code class="lang-js"><span class="hljs-comment">// &#x5B9A;&#x4E49;</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Welcome</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+  <span class="hljs-comment">// constructor(props) {</span>
+  <span class="hljs-comment">//   this.props = props</span>
+  <span class="hljs-comment">// }</span>
+  render(){
+    <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>hello {this.props.name}<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+  }
+}
+<span class="hljs-comment">// &#x4F7F;&#x7528;</span>
+<span class="hljs-keyword">let</span> ele = <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Welcome</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;watson&quot;</span> /&gt;</span>
+</span></code></pre>
+<p>  3.3 &#x5BF9;&#x7EC4;&#x4EF6;&#x5C5E;&#x6027;&#x7684;&#x7C7B;&#x578B;&#x6821;&#x9A8C;  </p>
+<pre><code class="lang-js"><span class="hljs-keyword">import</span> PropTypes <span class="hljs-keyword">from</span> <span class="hljs-string">&apos;prop-types&apos;</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span></span>{
+  <span class="hljs-keyword">static</span> PropTypes = {
+    age: PropTypes.string.isRequired
+  }
+  render(){
+    <span class="hljs-keyword">let</span> {age,gender,position} = props
+    <span class="hljs-keyword">return</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>...<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span></span>
+  }
+}
+<span class="hljs-keyword">let</span> props = {
+  age:<span class="hljs-number">80</span>,
+  gender:<span class="hljs-string">&apos;male&apos;</span>,
+  hobby:[<span class="hljs-string">&apos;smoking&apos;</span>,<span class="hljs-string">&apos;drinking&apos;</span>],
+}
+</code></pre>
+<h3 id="dom-diff&#x539F;&#x5219;">dom diff&#x539F;&#x5219;</h3>
+<p>  3.1 &#x5C3D;&#x91CF;&#x590D;&#x7528;&#x65E7;DOM&#xFF08;key&#x548C;&#x5143;&#x7D20;&#x5BF9;&#x8C61;&#x90FD;&#x4E00;&#x81F4;&#xFF09;  &#x5BF9;&#x8C61;&#x600E;&#x4E48;&#x6BD4;&#x8F83;&#x4E00;&#x81F4;&#xFF1F;&#xFF1F;&#xFF1F;  </p>
 
                                 
                                 </section>
@@ -497,12 +564,12 @@
 
             
                 
-                <a href="../webpack/webpack.config.html" class="navigation navigation-prev " aria-label="Previous page: 配置">
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: react">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="summary.html" class="navigation navigation-next " aria-label="Next page: 概述">
+                <a href="../模块/" class="navigation navigation-next " aria-label="Next page: 模块">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -513,7 +580,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"几何图形","level":"1.4","depth":1,"next":{"title":"概述","level":"1.4.1","depth":2,"path":"几何图形/summary.md","ref":"几何图形/summary.md","articles":[]},"previous":{"title":"配置","level":"1.3.4","depth":2,"path":"webpack/webpack.config.md","ref":"webpack/webpack.config.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","github"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/shihangbo/fe-knowledge"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"watson","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"fe knowledge","language":"zh-hans","gitbook":"3.2.3","description":"select * from learn"},"file":{"path":"几何图形/README.md","mtime":"2020-09-18T15:15:51.653Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T07:32:21.736Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"学习文档","level":"1.6.1","depth":2,"next":{"title":"模块","level":"1.7","depth":1,"path":"模块/README.md","ref":"模块/README.md","articles":[{"title":"学习文档","level":"1.7.1","depth":2,"path":"模块/summary.md","ref":"模块/summary.md","articles":[]}]},"previous":{"title":"react","level":"1.6","depth":1,"path":"react/README.md","ref":"react/README.md","articles":[{"title":"学习文档","level":"1.6.1","depth":2,"path":"react/summary.md","ref":"react/summary.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["-sharing","github"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/shihangbo/fe-knowledge"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"watson","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"fe knowledge","language":"zh-hans","gitbook":"3.2.3","description":"select * from learn"},"file":{"path":"react/summary.md","mtime":"2020-09-28T11:44:29.140Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-09-29T07:32:21.736Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
