@@ -17,6 +17,8 @@
     * [vue3设计过程](vue3/vue3.md)
 * [react](react/README.md)
     * [学习文档](react/summary.md)
+* [模块](模块/README.md)
+    * [学习文档](模块/summary.md)
 ---
 
 * [JavaScript](part1/README.md)
