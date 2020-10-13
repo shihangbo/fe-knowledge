@@ -15,6 +15,7 @@
 * [vue3组件](vue3/README.md)
     * [vue3特性](vue3/summary.md)
     * [vue3设计过程](vue3/vue3.md)
+    * [文档学习](vue3/learn-doc.md)
 * [react](react/README.md)
     * [学习文档](react/summary.md)
 * [模块](模块/README.md)
