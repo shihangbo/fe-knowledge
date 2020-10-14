@@ -22,6 +22,8 @@
     * [学习文档](模块/summary.md)
 * [组件库开发-vue3](componets-vue3/README.md)
     * [基础知识](componets-vue3/summary.md)
+* [前端自动化](githubAction/README.md)
+    * [基础知识](githubAction/summary.md)
 ---
 
 * [JavaScript](part1/README.md)
