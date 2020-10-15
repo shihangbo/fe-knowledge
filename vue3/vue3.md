@@ -1,4 +1,4 @@
-## vue3 新特性
+## vue3 新特性 - 尤讲的
 https://haokan.baidu.com/v?vid=12934700591410275932&pd=bjh&fr=bjhauthor&type=video  
 
 
@@ -131,3 +131,24 @@ function block(){
   6.7 关于IE  
     6.7.1 会有一个专门的版本，在IE11重自动降级为旧的getter/setter机制，并对IE中不支持的用法给出警告  
     
+
+### 7.进阶篇 - 源码剖析
+  1.vue3使用ts开发，对ts支持友好
+  2.源码体积优化：移除部分api（例如filter过滤器），使用tree-shaking（使用到的api进行打包，没有的就过滤掉，减轻源码体积）
+  3.数据劫持优化：Proxy，性能提升
+  4.编译优化：vue3实现了静态模版分析，重写diff算法
+  5.CompositionAPI：整合业务代码逻辑，提取公共逻辑（vue2用mixin实现-命名冲突/数据来源不清晰）
+  6.自定义渲染器：可以创建自定义的渲染器，改写vue底层渲染逻辑
+  7.新增组件：Fragment，Teleport，Suspense
+
+### 8.基础篇 - 核心知识与实战开发
+  1.vue3新特性
+  2.基于vite实现vue3工程化部署
+  3.掌握setup和10中响应式系统api
+  4.新生命周期函数和refs使用
+  5.基于vue3实现知乎app开发
+### 9.进阶篇 - 源码剖析
+  1.手写vue3中的reactivity模块
+  2.vue3的dom-diff
+  3.vue3中“自定义渲染器”的实现原理
+  4.vite工具实现原理
