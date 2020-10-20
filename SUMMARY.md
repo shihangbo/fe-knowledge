@@ -1,9 +1,11 @@
 # Summary
 
 * [Introduction](README.md)
-* [JavaScript](part1/README.md)
-    * [Function](part1/function.md)
-    * [GitBook is nice](part1/gitbook.md)
+* [JavaScript](JavaScript/README.md)
+    * [Function](JavaScript/function.md)
+    * [GitBook is nice](JavaScript/gitbook.md)
+    * [模版引擎](JavaScript/1compiler.md)
+    * [防抖与节流](JavaScript/2throttleAndDebounce.md)
 * [webpack](webpack/README.md)
     * [概述](webpack/summary.md)
     * [coding](webpack/codding.md)
