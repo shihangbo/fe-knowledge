@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>配置 · fe knowledge</title>
+        <title>前端自动化 · fe knowledge</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,10 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../几何图形/" />
+    <link rel="next" href="summary.html" />
     
     
-    <link rel="prev" href="webpack.html" />
+    <link rel="prev" href="../componets-vue3/summary.md" />
     
 
     </head>
@@ -173,9 +173,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../webpack/">
             
-                <a href="./">
+                <a href="../webpack/">
             
                     
                     webpack
@@ -187,9 +187,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.3.1" data-path="summary.html">
+        <li class="chapter " data-level="1.3.1" data-path="../webpack/summary.html">
             
-                <a href="summary.html">
+                <a href="../webpack/summary.html">
             
                     
                     概述
@@ -200,9 +200,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.2" data-path="codding.html">
+        <li class="chapter " data-level="1.3.2" data-path="../webpack/codding.html">
             
-                <a href="codding.html">
+                <a href="../webpack/codding.html">
             
                     
                     coding
@@ -213,9 +213,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.3.3" data-path="webpack.html">
+        <li class="chapter " data-level="1.3.3" data-path="../webpack/webpack.html">
             
-                <a href="webpack.html">
+                <a href="../webpack/webpack.html">
             
                     
                     源码解析
@@ -226,9 +226,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3.4" data-path="webpack.config.html">
+        <li class="chapter " data-level="1.3.4" data-path="../webpack/webpack.config.html">
             
-                <a href="webpack.config.html">
+                <a href="../webpack/webpack.config.html">
             
                     
                     配置
@@ -456,9 +456,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.9" data-path="../githubAction/">
+        <li class="chapter active" data-level="1.9" data-path="./">
             
-                <a href="../githubAction/">
+                <a href="./">
             
                     
                     前端自动化
@@ -470,9 +470,9 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.9.1" data-path="../githubAction/summary.html">
+        <li class="chapter " data-level="1.9.1" data-path="summary.html">
             
-                <a href="../githubAction/summary.html">
+                <a href="summary.html">
             
                     
                     基础知识
@@ -570,7 +570,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >配置</a>
+        <a href=".." >前端自动化</a>
     </h1>
 </div>
 
@@ -585,36 +585,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h2 id="webpack-&#x914D;&#x7F6E;">webpack &#x914D;&#x7F6E;</h2>
-<pre><code class="lang-js"><span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&apos;path&apos;</span>)
-{
-  <span class="hljs-comment">// &#x5728;webpack&#x89E3;&#x6790;loader&#x7684;&#x65F6;&#x5019;&#x914D;&#x7F6E;</span>
-  resolveLoader: {
-    alias:{  <span class="hljs-comment">// &#x522B;&#x540D;</span>
-      <span class="hljs-comment">// &apos;babel-loader&apos;: path.resolve(__dirname,&apos;loaders&apos;,&apos;babel-loader.js&apos;)</span>
-    },
-    modules:[path.resolve(__dirname,<span class="hljs-string">&apos;loaders&apos;</span>),path.resolve(__dirname,<span class="hljs-string">&apos;node_modules&apos;</span>)]
-  },
-  <span class="hljs-comment">// &#x914D;&#x7F6E;&#x5982;&#x4F55;&#x67E5;&#x627E;&#x666E;&#x901A;&#x6A21;&#x5757;</span>
-  resolve: {
-    alias:{  <span class="hljs-comment">// &#x522B;&#x540D;</span>
-      <span class="hljs-comment">// &apos;babel-loader&apos;: path.resolve(__dirname,&apos;loaders&apos;,&apos;babel-loader.js&apos;)</span>
-    },
-    modules:[path.resolve(__dirname,<span class="hljs-string">&apos;loaders&apos;</span>),path.resolve(__dirname,<span class="hljs-string">&apos;node_modules&apos;</span>)]
-  },
-  <span class="hljs-comment">// loader&#x914D;&#x7F6E;</span>
-  <span class="hljs-built_in">module</span>:{
-    rules:[
-      {
-        test:<span class="hljs-regexp">/\.js&amp;/</span>,
-        use:[  <span class="hljs-comment">// &#x8FD9;&#x4E2A;&#x914D;&#x7F6E;&#x53EF;&#x4EE5;&#x662F;&#x591A;&#x4E2A;&#xFF0C;&#x6267;&#x884C;&#x987A;&#x5E8F;&#x201C;&#x4ECE;&#x4E0B;&#x5F80;&#x4E0A;&#xFF0C;&#x4ECE;&#x53F3;&#x5F80;&#x5DE6;&#x201D;</span>
-          <span class="hljs-string">&apos;babel-loader&apos;</span>
-        ]
-      }
-    ]
-  }
-}
-</code></pre>
+                                <h1 id="&#x4F7F;&#x7528;-github-action-&#x8FDB;&#x884C;&#x524D;&#x7AEF;&#x81EA;&#x52A8;&#x5316;&#x53D1;&#x5E03;">&#x4F7F;&#x7528; Github Action &#x8FDB;&#x884C;&#x524D;&#x7AEF;&#x81EA;&#x52A8;&#x5316;&#x53D1;&#x5E03;</h1>
 
                                 
                                 </section>
@@ -642,12 +613,12 @@
 
             
                 
-                <a href="webpack.html" class="navigation navigation-prev " aria-label="Previous page: 源码解析">
+                <a href="../componets-vue3/summary.md" class="navigation navigation-prev " aria-label="Previous page: 基础知识">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="../几何图形/" class="navigation navigation-next " aria-label="Next page: 几何图形">
+                <a href="summary.html" class="navigation navigation-next " aria-label="Next page: 基础知识">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -658,7 +629,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"配置","level":"1.3.4","depth":2,"next":{"title":"几何图形","level":"1.4","depth":1,"path":"几何图形/README.md","ref":"几何图形/README.md","articles":[{"title":"概述","level":"1.4.1","depth":2,"path":"几何图形/summary.md","ref":"几何图形/summary.md","articles":[]},{"title":"[g2]","level":"1.4.2","depth":2,"ref":"","articles":[]}]},"previous":{"title":"源码解析","level":"1.3.3","depth":2,"path":"webpack/webpack.md","ref":"webpack/webpack.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","github"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/shihangbo/fe-knowledge"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"watson","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"fe knowledge","language":"zh-hans","gitbook":"3.2.3","description":"select * from learn"},"file":{"path":"webpack/webpack.config.md","mtime":"2020-09-02T06:20:33.491Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-22T11:31:07.483Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"前端自动化","level":"1.9","depth":1,"next":{"title":"基础知识","level":"1.9.1","depth":2,"path":"githubAction/summary.md","ref":"githubAction/summary.md","articles":[]},"previous":{"title":"基础知识","level":"1.8.1","depth":2,"path":"componets-vue3/summary.md","ref":"componets-vue3/summary.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-sharing","github"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/shihangbo/fe-knowledge"},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","author":"watson","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"fe knowledge","language":"zh-hans","gitbook":"3.2.3","description":"select * from learn"},"file":{"path":"githubAction/README.md","mtime":"2020-10-14T09:50:14.051Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-10-22T11:31:07.483Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
