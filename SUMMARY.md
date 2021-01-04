@@ -5,6 +5,7 @@
     * [Function](JavaScript/function.md)
     * [模版引擎](JavaScript/compiler.md)
     * [防抖与节流](JavaScript/throttleAndDebounce.md)
+    * [js模块](JavaScript/module.md)
 * [webpack](webpack/README.md)
     * [概述](webpack/summary.md)
     * [coding](webpack/codding.md)
