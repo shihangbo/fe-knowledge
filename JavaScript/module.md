@@ -10,14 +10,15 @@
 - 依法方便的控制依赖的家在顺序
 
 ### 1.2 CommonJS
-CommonJS 是一种js的模块化规范，核心思想是通过 `require` 方法来同步地加载依赖的其他模块，通过 `module.exports` 导出需要暴露的接口；
+CommonJS 是一种js的模块化规范
+核心思想是通过 `require` 方法来同步地加载依赖的其他模块，通过 `module.exports` 导出需要暴露的接口；
 node实现了CommonJS
 #### 1.2.1用法
 ```js
+  // 导出
+  modelue.exports = 'moduleA'
   // 导入
   const moduleA = require('./moduleA')
-  //导出
-  modelue.exports = 'moduleA'
 ```
 #### 1.2.2 实现require
 ```js
@@ -41,7 +42,7 @@ AMD 规范主要是为了解决针对浏览器环境的模块化问题，最具�
 
 #### 1.2.1用法
 ```js
-  // 定义
+  // 导出
   define('name',[],function(){
     return 'watson'
   })
@@ -49,7 +50,7 @@ AMD 规范主要是为了解决针对浏览器环境的模块化问题，最具�
   define('age',['name'],function(name){
     return name + 9
   })
-  // 使用 同时加载多个依赖
+  // 导入 同时加载多个依赖
   require(['age'],function(age){
     console.log(age)
   })
