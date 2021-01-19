@@ -59,5 +59,26 @@
 6. computed watch method 的区别
   1. method 如果将方法用在模版上，只要属性变化触发视图渲染，就重新执行方法，性能开销比较大  
   2. watch 
-7. watch中 deep:true 的实现
-  
+7. watch 对象中的 deep:true 的实现  
+  1. 当用户指定 watch 中的deep属性为true时，会对对象中的每一项进行求值，此时会将当前watcher存入到对应属性的依赖中，这样对象中的属性发生变化时会通知数据更新；  
+  2. 源码解读：  
+    initWatch(vm,watch) 初始化watch ->
+    createWatcher(vm, expOrFn, ..) 核心方法调用$watch ->  
+    vm.$watch(expOrFn, ...) new Watcher() 创建一个用户user watcher ->  
+    立即执行取值，进行依赖收集 value=this.get()，如果deep为true，执行traverse(value)循环取值  
+8. Vue组件的生命周期
+  1. 8个生命周期钩子：beforeCreate created beforeMount mounted beforeUpdate updated beforeDestroy destroyed  
+  2. 开发中常用到的：
+    created：实例创建完成，请求数据  
+    mounted：实例挂在完成，DOM操作  
+    beforeUpdate：更新状态的最后时机  
+    update：执行依赖于DOM的操作，transition  
+    beforeDestory：优化操作，清空定时器 解除绑定等  
+
+
+
+
+拓展
+1. 渲染watcher
+2. 计算watcher
+3. 用户watcher
