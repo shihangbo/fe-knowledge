@@ -74,6 +74,48 @@
     beforeUpdate：更新状态的最后时机  
     update：执行依赖于DOM的操作，transition  
     beforeDestory：优化操作，清空定时器 解除绑定等  
+  3. 源码解读：  
+    Vue core/instance/index.js line:8 ->  
+      initMixin(Vue)              1.初始化_init方法  
+      stateMixin(Vue)             2.初始化$set $delete $watch  
+      eventsMixin(Vue)            3.初始化 vue中的 $on $emit事件  
+      lifecycleMixin(Vue)         4.初始化 _update方法  
+      renderMixin(Vue)            5.初始化 _render方法  
+    this._init() 调用_init()方法 初始化 vue的整个流程 core/instance/index.js line:16 ->  
+      initLifecycle(vm)           1.初始化组件的父子关系  
+      initEvents(vm)              2.初始化组件事件  
+      initRender(vm)              3.初始化slot，$createElement方法  
+      callHook(vm, beforeCreate)  4.生命周期 beforeCreate - 无法获取实例的数据  
+      initInjections(vm)          5.解析inject  
+      initState(vm)               6.初始化状态 响应式数据在这里完成  / method / watcat  
+      iniProvide(vm)              7.解析provide  
+      callHook(vm, created)       8.生命周期 created - 获取数据  
+    - 判断有el，执行vm.$mount方法  ->  
+    - 判断有模版，将模版转换成render函数，mount.call() 调用runtime的mount方法 platform/web/entry-runtime-with-compiler line:82 ->  
+    - $mount 挂在组件 platform/web/runtime/index.js line:42 ->  
+    - mountComponent 进行组件挂载 core/instance/lifecycle/index.js line:141 ->  
+    callHook(vm, 'beforeMount')  生命周期 beforeMount方法  ->  
+    vm._update(vm, _render) 初次渲染和更新  ->  
+    callHook(vm, 'mounted') 生命周期 mounted方法 ->  
+    flushSchedulerQueue 当页面变化时触发 生命周期 beforeUpdate updated core/observer/scheduler.js line:71 ->  
+    当调用$destroy时触发 生命周期 beforeDestroy destroyed core/instance/lifecycle/index.js line
+    :91 ->  
+  9. ajax请求放在哪个生命周期中  
+    1. 单页应用：created / mounted 都可以，区别就是 created不能获取dom节点，mounted是可以获取到的  
+    2. 服务端渲染：不支持mounted方法，因此只能在created中请求  
+  10. 何时需要使用 beforeDestroy  
+    1. 组件使用了$on方法  
+    2. 清楚定时器  
+    3. 解除原生事件绑定 scroll mousemove ...  
+  11. 模版编译原理  
+    1. 将模版转化成 ast树  
+    2. 优化树  
+    3. 将ast树 生成代码  
+    
+
+
+
+
 
 
 
