@@ -108,10 +108,16 @@
     2. 清楚定时器  
     3. 解除原生事件绑定 scroll mousemove ...  
   11. 模版编译原理  
-    1. 将模版转化成 ast树  
-    2. 优化树  
-    3. 将ast树 生成代码  
-    
+    1. 将模版转化成 ast树,parseHTML()   
+    2. 优化树,generate()  
+    3. 将ast树 生成 render函数  
+```js
+  let render = `with(this){return ${code}}`
+  let renderFn = new Function(render)
+```
+      
+
+
 
 
 
