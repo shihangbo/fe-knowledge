@@ -112,12 +112,92 @@
     2. 优化树,generate()  
     3. 将ast树 生成 render函数  
 ```js
+  // 模版引擎的实现原理
   let render = `with(this){return ${code}}`
   let renderFn = new Function(render)
 ```
-      
+  12. Vue中 v-if 和 v-show 的区别
+    1. v-if 如果条件不成立 不会渲染当前节点的dom元素，源码通过 三元判断 实现  
+```js
+  `<div v-if="true"><span v-for="i in 3">hello</span></div>`
+  // 通过 vue compile 转化成 render函数，即模版引擎
+  with(this) {
+    return (true)
+      ? _c('div', _l(3, funciton(){
+          return _c('span', [_v('hello')])
+        }), 0)
+      : _e()
+  }
+```
+    2. v-show 切换当前dom元素的显示和隐藏，源码 编译成指令 directive 实现  
+```js
+  `<div v-show="true"></div>`
+  // 通过 vue compile 转化成 render函数，即模版引擎
+  with(this) {
+    return _c('div', {
+      directives: [
+        {
+          name: 'show',
+          rawName: 'v-show',
+          value: (true),
+          expression: 'true'
+        }
+      ]
+    })
+  }
+```
+  13. 为什么v-for 和 v-if 不能连用
+    1. vue中 v-for的处理优先级比 v-if高一些，同时存在的时候首先处理 v-for，在处理 v-if  
+```js
+  `<div v-if="false" v-for="i in 3">hello</div>`
+  // 通过 vue compile 转化成 render函数，即模版引擎
+  with(this) {
+    return _l(3, funciton(){
+        return ((false) 
+          ? _c('div', [_v('hello')])
+          : _e())
+      })
+  }
+```
+  14. 用vnode来描述DOM结构
+```js
+  // 返回虚拟dom
+  export function vnode(tag,data,key,children,text) {
+    return {
+      tag,
+      data,
+      key,
+      children,
+      text
+    }
+  }
 
-
+  // 转化成虚拟DOM
+  function _c(tag,data,...children){
+    let key = data.key
+    delete data.key
+    children = children.map(child => {
+      if(typeof child === 'object'){
+        return child
+      }else {
+        return vnode(undefined,undefined,undefined,undefined,child)
+      }
+    })
+    return vnode(tag,data,key,children)
+  }
+```
+  15. diff算法的时间复杂度  
+    1. 两个树完全的diff算法是一个时间复杂度为o(n3)，vue进行优化将时间复杂度转换为o(n)，只比较统计不开绿跨级的问题。  
+       在前端中，很少回跨域层级进行DOM元素的移动  
+  16. 简述vue中diff算法原理  
+    1. 先同级比较，再子节点比较  
+    2. 处理一方有子节点，一方无子节点的情况  
+    3. 处理都有子节点的情况
+       1. 头跟头比 i++       -> 开头插入  
+       2. 尾跟尾比 l--       -> 结尾插入  
+       3. 头跟尾比 i++ l--   -> 正序  
+       4. 尾跟头比 i-- l++   -> 倒序  
+       5. 递归 循环拿新节点匹配老节点，如果匹配到直接移动老节点到老节点开始到前面，如果匹配不到将新节点插入到老节点开始的前面；循环结束若老节点还有剩余，删除移除所有老节点  -> 乱序  
 
 
 
@@ -127,6 +207,10 @@
 
 
 拓展
-1. 渲染watcher
-2. 计算watcher
-3. 用户watcher
+1. 渲染watcher  
+2. 计算watcher  
+3. 用户watcher  
+4. v-for的实现：通过一个 function函数 实现的  
+5. 关于template的转化路径  
+template -> ast树 -> codegen() -> render函数 -> 内部调用_c方法 -> 虚拟DOM  
+6. vue将template转换为ast使用的是jquery之父写一个ast解析库 http://erik.eae.net/simplehtmlparser/simplehtmlparser.js  
