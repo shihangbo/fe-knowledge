@@ -207,9 +207,108 @@
   18. 组件渲染和更新的过程  
     1. 渲染组件时，会通过Vue.extend方法构建子组件的构造函数，并进行实例化，最终手动调用 $mount() 进行挂在  
        更新组件时，会进行 patch Vnode流程，核心是diff算法  
-       
+  19. 组件中的data为什么是一个函数，防止被公用，为什么被公用  
+    1. 同一个组件被复用多次，会创建多个实例，这些实例通过组件的Ctor进行实例化，如果data是一个对象，那么所有实例都共享这个对象；为了保证组件数据的独立性，组件实例化的过程中通过data函数返回一个对象作为组件的状态  
+    2. 源码解析  
+      Sub.options = mergeOptions(Super.option,extendOptions) 对创建的子类，进行合并参数 merge to option objects into a new one  ->  
+      strat(data)  判断childVal && typeof childVal !== 'function' 提示 warn('the data option should be a function. that returns a per-instance value in component definitions.')  ->  
+      mergeDataOrFn(parentVal,childVal)  进行合并  
+  20. vue中的事件绑定原理  
+    1. vue的事件绑定有两种，原生 / 组件的事件绑定  
+    2. 原生dom事件绑定，采用addEventListener实现  
+```js
+  `<div @click="fn">hello</div>`
+  // 通过 vue compile 转化
+  {on:{click:function($event){return fn()}}}
+```
+    3. 组件事件绑定，采用 $on 方法  
+```js
+  `<my-component @click.native="fn" @click="fn1">hello</my-component>`
+  // 通过 vue compile 转化
+  {nativeOn:{click:function($event){return fn($event)}},on:{click:fn1}}
 
+  // 组件自定义事件
+  // 定义
+  $myComponent.on('click',()=>{})
+  // 使用
+  $myComponent.$emit('click')
+```
+    4. 组件中的nativeOn 等价与 普通元素on，组件的on进行单独处理  
+    5. 源码解析  
+    updateDOMListeners()  普通元素的事件处理函数 ->  
+      udpateListeners(on, oldOn, add$1 ...)  ->  
+      target$1.addEventListener(name,handler,capture)  普通元素绑定事件   
+    updateComponentListener(vm,listeners,oldListeners) ->  组件的事件处理函数  
+      udpateListeners(listeners, oldListeners, add ...)  ->  
+      target.$on(event,fn)  组件绑定事件，使用发布订阅模式，调用内部的$on方法  
+    6. 这边会引申出一个事件优化的问题，在循环列表元素绑定事件，不然给每个元素使用addEventListener绑定事件性能不好，一定要用事件代理方式进行优化  
 
+  21. v-model的实现原理  
+    1. 组件的v-model是 value + input方法 的语法糖，也是组件的 v-model  
+    2. 还有其他的v-mode绑定：checkbox v-model / select v-model  
+```html
+<!-- 使用 -->
+<el-checkbox :value="" @input=""></el-checkbox>
+<el-checkbox v-model=""></el-checkbox>
+```
+    3. 源码实现  
+```js
+  // 组件的v-model 自定义 通过：model属性 实现
+  Vue.component('el-checkbox', {
+    template: `<input type="checkbox" :checked="check" @change="$emit('change',$event.target.checked)">`,
+    model: {
+      prop: 'check',   // 自定义el-checkbox 默认的value名字
+      event: 'change'  // 自定义el-checkbox 默认的input方法名
+    },
+    props: {
+      check: Boolean  
+    }
+  })
+  // 编译之后
+  with(this){
+    return _c('el-checkbox',{
+      model: {
+        value: (check),
+        callback: function($$v){
+          check = $$v
+        },
+        expression: 'check'
+      }
+    })
+  }
+
+  // 普通元素的v-model 通过: 指令 + value(props) + input(on) 实现
+  `<input v-model="value">hello</input>`
+  // 编译之后
+  with(this) {
+    return _c('input', {
+      directives: [
+        {
+          name: 'model',
+          rewName: 'v-model',
+          value: (value),
+          expression: 'value'
+        }
+      ],
+      domProps: {
+        'value': (value)
+      },
+      on: {
+        'input': function($event){
+          if($event.target.composing) return;
+          value = $event.target.value
+        }
+      }
+    })
+  }
+```
+    4. 组件的v-model：编译之后通过model属性实现，可以通过template增加model属性进行名称的自定义   
+      - genComponentModel() : data.attrs.value = 'xxx' + on[event] = callback
+    5. 普通元素的v-model：不同的标签会解析出不同的内容，platforms/web/compiler/directives/model.js  
+      - tag === 'select' : genSelect() : 
+      - tag === 'input' && type === 'checkbox' : genCheckboxModel() : checked + change  
+      - tag === 'input' && type === 'radio' : genRadioModel() : value + input / change  
+      - tag === 'input' || tag === 'textarea' : genDefaultModel() : 
 
 
 
@@ -222,3 +321,8 @@
 5. 关于template的转化路径  
 template -> ast树 -> codegen() -> render函数 -> 内部调用_c方法 -> 虚拟DOM  
 6. vue将template转换为ast使用的是jquery之父写一个ast解析库 http://erik.eae.net/simplehtmlparser/simplehtmlparser.js  
+7. 组件复用：创建多个相同的组件，多次 创建组件的实例  
+8. Object.create(), 字面量创建, new Object() 之间的区别
+    Object.create() 创建带有指定原型对象和属性的新对象；两个参数：(proto,propertiesObject)，proto - 新创建对象的原型对象，即提供新对象的__proto__属性，propertiesObject - 参照Object.defineProperties()的第二个参数，定义其可枚举属性和修改的属性描述符对象，即数据描述符(value,writable,configurable,enumerable)和访问器描述符(get,set,configurable,enumerable)  
+    字面量创建 和 new Object() 创建的新对象是继承了Object对象原型的对象；字面量创建 - 最简洁的写法；
+9. 为什么new Vue(data:{})中的data是一个对象：因为项目中只会实例化一次Vue；
