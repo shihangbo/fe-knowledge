@@ -310,6 +310,102 @@
       - tag === 'input' && type === 'radio' : genRadioModel() : value + input / change  
       - tag === 'input' || tag === 'textarea' : genDefaultModel() : 
 
+  22. vue中的v-html会导致什么问题  
+    1. 可能导致 xss攻击  
+    2. v-html 会替换掉标签内部的子元素  
+    3. 源码实现  
+```js
+  `<div v-html="<span>hello</span>"></div>`
+  // 模版编译后 
+  with(this) {
+    return _c('div',{
+      domProps: {
+        innerHTML: _s('<span>hello</span>')
+      }
+    })
+  }
+  // _s 的处理方式
+  if (key === 'textContent' || key === 'innerHTML') {
+    // 删除所有子元素
+    if(vnode.children)  vnode.children.length = 0
+    // 设置新值
+    elm['innerHTML'] = cur
+  }
+```
+
+  23. 父子组件 生命周期的调用顺序  
+    1. 加载渲染过程 : f beforeCreate -> f created -> f beforeMounte -> c beforeCreate -> c created -> c beforeMounte -> c mounted -> f mounted  
+    2. 子组件更新   : f beforeUpdate -> c beforeUpdate -> c updated -> f updated  
+    3. 父组件更新   : f beroreUpdate -> f updated  
+    4. 销毁过程    :  f beforeDestroy -> c beforeDestroy -> c destroyed -> f destroyed  
+    5. 总体的执行顺序
+      - 组件的调用顺序 先父后子，渲染完成的顺序 先子后父  
+    6. 组件的渲染流程
+        patch 渲染和更新调用patch方法  
+        insertedVnodeQueue 收集组件的vnode  
+        createElm 创建元素  
+          普通元素 createChildren 递归遍历子节点 -> 这里会回到 createElm 方法 ->  
+          组件    createComponent 创建组件
+            调用组件 init 方法 -> 这里会回到 patch方法 渲染当前组件的内容 ->  
+            initComponent 将pendingInsert 插入到自己的queue 中  
+            invokeCreateHooks insertedVnodeQueue 放入当前vnode
+        invokeInsertHook 1.如果是子组件，会将queue赋予给父组件的pendingInsert 上；2.如果不是patch就会一次调用insert方法；  
+    6.1 insertedVnodeQueue 代表组件初始化完之后，渲染/更新函数统一暂存在 这个队列中  
+
+  24. 通信？- 6  
+    1. 父子之间：props + $on / $emit  
+    2. 通过实例：$parent / $children  
+    3. 调用组件：ref  
+    4. 父提供数据 子消费数据：provide / inject  
+    5. 跨组件通信：Event / Bus  
+    6. 状态管理：Vuex  
+  25. Vue 中间相同的逻辑如何抽离 / 生命周期合并规则  
+    1. Vue.mixin  
+      1.1 Vue.mixin 源码解析  
+```js
+Vue.mixin = function(mixin) {
+  this.options = mergeOptions(this.options, mixin) // 将定义的属性合并到组件中
+  return this
+}
+//strats 保存各种合并策略 data watch computed lifeCycle ...
+function mergeOptions(parent, child) {
+  if (!child._base) {
+    // 递归合并 extends
+    // 递归合并 mixin
+  }
+  // 合并属性和生命周期
+  const options = {}
+  let key
+  for(key in parent){
+    mergeField(key)
+  }
+  for(key in child) {
+    mergeField(key)
+  }
+  function mergeField(key){
+    const strat = strats[key] || defaultStrat
+    options[key] = strat(parent[key],child[key],vm,key)
+  }
+  return options
+
+}
+```
+    2. 生命周期合并规则  
+```js
+  // 定义生命周期的合并规则
+  LIFECYCLE_HOOK.forEach(hook => {
+    strats[hook] = mergeHook
+  })
+  function mergeHook(parentVal,childVal) {
+    // 父子都有 父.concat(子)
+    // 子有 父没有，子是数据 返回子
+    // 子有 父没有，子不是数据 包装成数据 返回子
+    // 子没有 父有，返回父
+  }
+```
+
+
+
 
 
 
@@ -325,4 +421,17 @@ template -> ast树 -> codegen() -> render函数 -> 内部调用_c方法 -> 虚�
 8. Object.create(), 字面量创建, new Object() 之间的区别
     Object.create() 创建带有指定原型对象和属性的新对象；两个参数：(proto,propertiesObject)，proto - 新创建对象的原型对象，即提供新对象的__proto__属性，propertiesObject - 参照Object.defineProperties()的第二个参数，定义其可枚举属性和修改的属性描述符对象，即数据描述符(value,writable,configurable,enumerable)和访问器描述符(get,set,configurable,enumerable)  
     字面量创建 和 new Object() 创建的新对象是继承了Object对象原型的对象；字面量创建 - 最简洁的写法；
-9. 为什么new Vue(data:{})中的data是一个对象：因为项目中只会实例化一次Vue；
+9. 为什么new Vue(data:{})中的data是一个对象：因为项目中只会实例化一次Vue；  
+10. vue中的发布订阅 $on $emit
+  $on: 维护一个队列 {a: [fn1,fn2,fn3,...]}  
+```js
+  vm._events[event].push(fn)
+```
+  $emit: 找到event对应的队列，执行他  
+```js
+  let cbs = vm._events[event]
+  for(let i=0,l=cbs.length;i<l;i++){
+    invokeWithErrorHandling(cbs[i], vm, ...)
+  }
+```
+11. 生命周期是怎么合并的  
