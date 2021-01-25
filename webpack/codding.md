@@ -1,6 +1,6 @@
 ## webpack基础知识
 
-#### 1.toStringFlag
+#### 1.toStringTag
 ```js
 console.log(Object.prototype.toString.call('watson'))
 console.log(Object.prototype.toString.call(1))
@@ -28,7 +28,7 @@ console.log(ns2, Object.getPrototypeOf(ns2))
 // 2.Object.create的实现
 Object.create = function(proto) {
   function F(){}
-  P.prototype = proto
+  F.prototype = proto
   return new F()
 }
 ```

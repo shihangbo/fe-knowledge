@@ -8,7 +8,7 @@
 
 ### 2.webpack内部使用概念
 1.Compiler：代表整个webpack对象；  
-2.Compilation：编译对象，每次新到编译生成新的compilation对象，里面会包含 modules chunks assets files...
+2.Compilation：编译对象，每次编译生成新的compilation对象，里面会包含 modules chunks assets files...
 
 
 ### 3.webpack 流程
@@ -16,13 +16,13 @@
    1.1 从配置文件 和 shell语句中读取参数并合并参数，得出最终的参数；  
 2.编译阶段  
    2.1 开始编译：初始化Complier对象，加载所有配置的插件，执行对象的run方法开始执行编译，确定入口 entry对应的文件；  
-   2.2 编译模块：从入口文件出发，调用所有配置的loader对模块进行编译，再递归本步骤直到所有日寇依赖的文件都经过了本步骤的处理；  
+   2.2 编译模块：从入口文件出发，调用所有配置的loader对模块进行编译，再递归本步骤直到所有依赖的文件都经过了本步骤的处理；  
    2.3 完成模块编译：再经过第4步使用loader翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系；  
 3.输出阶段  
    3.1 输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个Chunk转换成一个单独的文件加入到输出列表，这步是可以修改的输出内容的最后机会；  
    3.2 输出完成：再确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统；  
 总结  
-  在以上过程中，webpack会在特定的时间点广播出特定的时间，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用webpack提供的API改变webpack的运行结果；  
+  在以上过程中，webpack会在特定的时间点广播出特定的事件，插件在监听到感兴趣的事件后会执行特定的逻辑，并且插件可以调用webpack提供的API改变webpack的运行结果；  
 
 
 ### 4.webpack 调试流程 - 配合 vscode
@@ -156,14 +156,14 @@ function loader(source){
     return fileLoader.call(this,source)
   }
 }
-loader.row = true // 不然让webpack把源文件转成字符串，true-源文件以buffer（字节数组）返回，false-源文件以字符串返回
+loader.row = true // 不让webpack把源文件转成字符串，true-源文件以buffer（字节数组）返回，false-源文件以字符串返回
 module.exports = loader
 ```
 
 ### 9.url-loader
  1 样式处理  
-    css-loader：处理css中的@import和url这样的外部链接  
     style-loader：把样式插入到dom中，方法是在head中插入一个style标签，并把样式写入到这个标签到innerHTML里  
+    css-loader：处理css中的@import和url这样的外部链接  
     less-loader：把less编译成css  
  2 手写实现  
 ```js
@@ -566,6 +566,7 @@ module.exports = (env,argv) => ({
   module.exports={
     output:{
       filename:'[name]_[hahs].js',
+      // 公共模块
       chunkFilename:'[name]_[chunkhash].js',
     },
     plugins:[
