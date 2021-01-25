@@ -398,15 +398,143 @@ function mergeOptions(parent, child) {
   })
   function mergeHook(parentVal,childVal) {
     // 父子都有 父.concat(子)
-    // 子有 父没有，子是数据 返回子
-    // 子有 父没有，子不是数据 包装成数据 返回子
+    // 子有 父没有，返回子
     // 子没有 父有，返回父
   }
+  // 执行 ：循环数组，依次执行 mixin的先执行
+```
+  26. 为什么使用异步组件，什么场景下使用
+    1. 遇到组件打包出来的结果很大，使用异步组件（刚开始不用加载，通过异步的方式进行加载）  
+    2. import() 语法  
+```js
+  // 用法
+  components: {
+    addCustomerSchedule: (resolve) => import(../components/AddCustomer)
+  }
+  // 原理 - 异步组件是一个函数 新版本提供了返回对象的形式
+  // 1.组件创建过程中 调用 Ctor = resolveAsyncComponent(asyncFactory, baseCtor)方法，并且asyncFactory马上执行，并不会马上返回结果，即undefined，渲染一个注释  
+  // 2.当异步组件加载之后，成功调resolve/失败调reject，resolve会执行forceRender 强制更新，再次调用 resolveAsyncComponent 函数，直接返回成功或者失败的 Promise，进行组件的创建和渲染  
 ```
 
+  27. 什么是作用域插槽 插槽和作用域插槽的区别  
+    1. 插槽：渲染组件时，会拿对应的slot属性的节点进行替换操作 - 插槽的作用域为父组件  
+    1.1 插槽元素对应的vnode在父组件中，当组件使用slot标签时，用父组件对应的vnode进行替换操作  
+    1.2 源码解析  
+```js
+  // 父组件
+  `<my-component>
+    <div slot="header">node</div>
+  </my-component>`
+  // 编译之后
+  with(this){
+    return _c('my-component',[
+      _c('div', {
+        attrs: {
+          'slot': 'header'
+        },
+        slot: 'header'
+      }, [_v('node')])
+    ])
+  }
+  // my-component 子组件
+  `<div>
+    <slot nam="header"></slot>
+  </div>`
+  // 编译之后  
+  // _t = renderSlot
+  with(this){
+    return _c('div',[
+      _t('header')
+    ])
+  }
+```
+    2. 作用域插槽：在解析的时候不会作为组件的子节点，而是解析成函数，当子组件渲染时，会调用此函数进行渲染 - 插槽的作用域为子组件  
+    2.1 作用域插槽的内容 会被 编译成一个函数存在与父组件的vnode中，当子组件真正渲染的时候，才会执行这个函数，由子组件渲染成真实元素  
+    2.2 源码解析  
+```js
+  // 父组件
+  `<app>
+    <div slot-scoped="msg" slot="footer">{{msg.a}}</div>
+  </app>`
+  // 编译之后
+  // 作用域插槽的内容 会被 编译成一个函数
+  // _u = resolveScopedSlots
+  with(this){
+    _c('app',{
+      scopedSlots: _u([
+        {
+          key: 'footer',
+          fn: function(msg){
+            return _c('div',{},[_v(_s(msg.a))])
+          }
+        }
+      ])
+    })
+  }
+  // 子组件
+  `<div>
+    <slot name="footer" a="1" b=2"></slot>
+  </div>`
+  // 编译之后  
+  with(this){
+    return _c('div',[
+      _t('footer',null,{
+        a:'1',
+        b:'2'
+      })
+    ])
+  }
+```
+  28. keep-alive 的理解  
+    1. 实现组件的缓存，当组件切换是不会对当前组件进行卸载  
+    2. 两个属性：include / exclude  
+    3. 两个生命周期：activated / deactivated  
+    4. 一个算法：LRU算法（最近最久未使用法：把最近渲染放在列表最后面，删除从第0个开始）  
+    5. 实现原理  
+      5.1 内部维护一个缓存列表
+  29. 编码优化  
+    1. 精简data中的数据，比如定时器就不要放data了，比如只渲染的数据可以使用 Object.freeze 冻结  
+    2. v-for的时候使用事件代理，同时key保证唯一性，优化diff性能  
+    3. spa页面采用keep-alive缓存组件  
+    4. 拆分组件，提高复用性，增加代码可维护性，较少不需要的渲染  
+    5. 适当的使用v-if替代v-show  
+    6. 合理使用路由懒加载，异步组件  
+    7. 尽量采用runtime运行时版本  
+    8. 数据持久化问题（防抖，截流）  
 
+  30. vue加载性能优化  
+    1. 第三方模块按需加载 babel-plugin-component  
+    2. 滚动到可视区域动态加载 https://tangbc.github.io/vue-virtual-scroll-list  
+    3. 图片懒加载 https://github.com/hilongjw/vue-lazyload.git  
+  31. 用户体验  
+    1. app-skeleton 骨架屏  
+    2. app-shell app壳  
+    3. pwa serviceworker  
+  32. seo优化  
+    1. 预渲染插件 prerender-spa-plugin  
+    2. ssr服务端渲染  
+  33. 打包优化  
+    1. 使用cdn的方式加载第三方模块  
+    2. 多线程打包 happypack  
+    3. splitChunks 抽离公共文件  
+    4. sourceMap 生成  
+  34. 缓存，压缩  
+    1. 客户端缓存、服务端缓存  
+    2. 服务端gzip 压缩  
 
-
+  35. vue3 的改进 （这个题没有水平）  
+    1. ts  
+    2. 支持 Composition api，解决了mixin的缺陷，vue2代码的紊乱的问题  
+    3. proxy  
+    4. diff算法更新，只更新vdom的绑定了动态数据的部分  
+  
+  36. 实现hash路由和history路由
+    1. onhashchage
+    2. history.pushState
+  
+  37. vue-router 中导航守卫有哪些  
+    1. runQueue  
+    
 
 
 拓展
@@ -435,3 +563,6 @@ template -> ast树 -> codegen() -> render函数 -> 内部调用_c方法 -> 虚�
   }
 ```
 11. 生命周期是怎么合并的  
+12. LRU算法实现  
+13. 动态区域加载原理：判断可视区域，加载数据的上一屏/当前屏/下一屏  
+14. 图片懒加载：根据图片onload事件，判断可视区域，先预加载图片，再加载原图片的过程  
