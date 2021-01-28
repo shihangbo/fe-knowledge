@@ -80,7 +80,7 @@
   // 简单工厂模式
   class Factory {
     // 静态方法，不会被继承，只能直接调用
-    static create(type){
+    static create(type, name, flavour){
       switch(type) {
         case 'apple':
           return new Apple(name, flavour)
@@ -91,16 +91,20 @@
       }
     }
   }
-  const a1 = Factory.create('apple')('苹果', '甜')
-  const o1 = Factory.create('orange')('橘子', '酸')
+  const a1 = Factory.create('apple', '苹果', '甜')
+  const o1 = Factory.create('orange', '橘子', '酸')
 ```
   1.1 经典场景
     1.1.1 jQuery
 ```ts
+  // 定义
   class jQuery{}
   window.$ = function() {
     return new jQuery()
   }
+  // 使用
+  $('li').html()
+  $('li').addClass('red')
 ```
     1.1.1 React
 ```ts
@@ -119,6 +123,122 @@
   2. 工厂方法模式，多态性工厂模式
     概述：区别是工厂类不再直接所有类的创建，而是将具体创建的工作交给子类完成  
 ```ts
-  
+  // 定义工厂接口 规定子类必须实现的方法
+  // 依赖抽象，不依赖实现
+  // 可抽离成单独js文件
+  class Factory{
+    create(){}
+  }
+  // 实现接口 苹果工厂 可抽离成单独js文件
+  class AppleFactory extends Factory{
+    static create(name, flavour) {
+      return new Apple(name, flavour)
+    }
+  }
+  // 实现接口 橘子工厂 可抽离成单独js文件
+  class OrangeFactory extends Factory{
+    static create(name, flavour) {
+      return new Orange(name, flavour)
+    }
+  }
+  // 动态配置项，可抽离成单独配置js文件
+  const settins = {
+    'apple': AppleFactory,
+    'orange': OrangeFactory
+  }
+  // 使用
+  const a2 = settins['apple'].create('苹果', '甜')
+  const o2 = settins['orange'].create('苹果', '甜')
 ```
-  
+  3. 抽象工厂模式
+    概述：提供一个接口，在不指定具体产品的情况下，创建多个产品对象  
+```ts
+// 定义工厂基类
+class Factory{
+  createButton(){} // 创建按钮
+  createIcon(){} // 创建图标
+}
+// 定义图标基类
+class Icon{}
+class AppleIcon{
+  render(){ console.log('绘制AppleIcon') }
+}
+class WindowIcon{
+  render(){ console.log('绘制AppleIcon') }
+}
+// 定义按钮基类
+class Button{}
+class AppleButton{
+  render(){ console.log('绘制AppleIcon') }
+}
+class WindowButton{
+  render(){ console.log('绘制AppleIcon') }
+}
+
+// 定义工厂
+class AppleFactory extends Factory {
+  createButton(){
+    return new AppleButton()
+  }
+  createIcon(){
+    return new AppleIcon()
+  }
+}
+class WindowFactory extends Factory {
+  createButton(){
+    return new WindowButton()
+  }
+  createIcon(){
+    return new WindowIcon()
+  }
+}
+
+// 使用
+// apple平台
+const applePlatform = new AppleFactory()
+const appleButton = applePlatform.createButton()
+appleButton.render()
+const appleIcon = applePlatform.createIcon()
+appleIcon.render()
+// window平台
+const windowPlatform = new WindowFactory()
+const windowButton = applePlatform.createButton()
+windowButton.render()
+const windowIcon = applePlatform.createIcon()
+windowIcon.render()
+
+```
+
+### 5. 单例模式
+  1. 简单实现
+```ts
+  // es5 用闭包实现
+  function Window(name){
+    this.name = name
+  }
+  Window.getInstance = (function(){
+    let instance;
+    return function(name) {
+      if (!instance) {
+        instance = new Window(name)
+      }
+      return instance
+    }
+  })()
+  // es6 用类实现
+  // 定义类
+  class Window {
+    constructor(name) {
+      this.name = name
+    }
+    static getInstance() {
+      if(!this.instance) {
+        this.instance = new Window()
+      }
+      return this.instance
+    }
+  }
+  let w1 = Window.getInstance()
+  let w2 = Window.getInstance()
+  console.log(w1 === w2)
+```
