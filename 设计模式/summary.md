@@ -210,21 +210,26 @@ windowIcon.render()
 ```
 
 ### 5. 单例模式
-  1. 简单实现
+  1. 单例的实现
 ```ts
-  // es5 用闭包实现
+  // es5 用闭包实现 - 优化后的
   function Window(name){
     this.name = name
   }
-  Window.getInstance = (function(){
+  const CreateSingle = (function(Constructor){
     let instance;
-    return function(name) {
+    let SingleConstructor = function() {
       if (!instance) {
-        instance = new Window(name)
+        instance = new Constructor(...arguments)
       }
       return instance
     }
+    return SingleConstructor
   })()
+  let w1 = new CreateSingle(Window)
+  let w2 = new CreateSingle(Window)
+  console.log(w1 === w2)
+
   // es6 用类实现
   // 定义类
   class Window {
@@ -238,7 +243,97 @@ windowIcon.render()
       return this.instance
     }
   }
-  let w1 = Window.getInstance()
-  let w2 = Window.getInstance()
-  console.log(w1 === w2)
+  let w3 = Window.getInstance()
+  let w4 = Window.getInstance()
+  console.log(w3 === w4)
 ```
+  2. 命名空间
+    概述：防止便携代码过程中的名字冲突  
+```ts
+  // jQuery 实现 - 封装在一个$对象中
+  $ = {
+    get(){},
+    post(){}
+  }
+  // 使用 
+  $.get()
+  $.post()
+```
+```ts
+  // 自定义utils库
+  let utils = {a:1}
+  utils.define = function(namespace,fn) {
+    let namespaces = namespace.split(/\./)
+    let fnName = namespaces.pop()
+    let current = utils
+    for (let i=0,l=namespaces.length;i<l;i++){
+      let ns = namespaces[i]
+      if (!current[ns]) {
+        current[ns] = {}
+      }
+      current = current[ns]
+      current.a = 2
+    }
+    current[fnName] = fn
+  }
+  utils.define('dom.addClass',function(){
+    console.log('dom.addClass')
+  })
+  // 使用
+  console.log(utils.dom.addClass())
+```
+  3. 单例使用场景  
+    3.1 jQuery
+```ts
+  // jQuery 
+  if(window.jQuery) {
+    return window.jQuery
+  } else {
+    // init
+  }
+```
+    3.2 模态窗口组件：全局只会注册一个组件，全局随处可调用这个组件  
+    3.3 redux：单例模式的应用  
+    3.4 缓存，解决读硬盘速度慢的问题  
+```ts
+let express = require('express')
+let bodyParser = require('body-parser')
+let fs = require('fs')
+let cache = {}
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.get('/user/:id', function(req,res){
+  let id = req.params.id
+  let user = cache[id]
+  if (user) {
+    res.json(user)
+  } else {
+    fs.readFile(`./users/${id}.json`, 'utf8', function(err, data){
+      let user = JSON.parse(data)
+      cache[id] = user
+      res.json(user)
+    })
+  }
+})
+app.post('/user', function(){
+  let user = req.body
+  fs.writeFile(`./users/${user.id}.json`, JSON.stringify(user), function(err){
+    console.log(err)
+    res.json(user)
+  })
+})
+let app = express()
+app.listen(8080)
+```
+    3.5 LRU缓存，最近最少使用  
+      规则：1.用一个数组存储，给每个数据项标记一个访问时间戳  
+           2.每次插入新的数据项的时候，先把数据中存在的数据项的时间戳自增，并将新的数据项时间戳置为0，放入数据中  
+           3.访问已有数据项的时候，将该项时间戳重置为0  
+           4.当数据空间已满时，将时间戳最大的数据项淘汰  
+```ts
+
+```
+  
+
+
+
