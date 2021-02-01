@@ -2,7 +2,7 @@
 # 设计模式
 
 ### 1. 面向对象
-  1. 抽象：把客观对象抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来
+  1. 抽象：把客观事物抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来
   2. 封装：把同一类型的客观对象的属性数据和操作绑定在一起，封装成类
     2.1 public：公有修饰符，在类内或者外部使用，默认
     2.2 protected：受保护的，在本类和子类中使用
@@ -330,10 +330,189 @@ app.listen(8080)
            2.每次插入新的数据项的时候，先把数据中存在的数据项的时间戳自增，并将新的数据项时间戳置为0，放入数据中  
            3.访问已有数据项的时候，将该项时间戳重置为0  
            4.当数据空间已满时，将时间戳最大的数据项淘汰  
+    3.6 链表LRU，LRU缓存的升级版本  
 ```ts
-
+// 循环的版本
+class LRUCache {
+  constructor(capacity){
+    this.capacity = capacity
+    this.members = [] // [{key,value,age},...]
+  }
+  put(key,value){
+    let oldestAge = -1
+    let oldestIndex = -1
+    let found = false
+    let length = this.members.length
+    for(let i=0;i<length;i++){
+      let member = this.members[i]
+      if (member.age > oldestAge) {
+        oldestAge = member.age
+        oldestIndex = i
+      }
+      if (member.key === key) {
+        found = true
+        this.members[i] = {key,value,age:0}
+      } else {
+        member.age++
+      }
+    }
+    if (!found) {
+      if (length >= this.capacity) {
+        this.members.splice(oldestIndex, 1)
+      }
+      this.members.push({key,value,age:0})
+    }
+  },
+  get(key){
+    for(let i=0,l=this.members.length;i<l;i++){
+      let member = this.members[i]
+      if (member.key === key) {
+        member.age = 0
+        return member.value
+      }
+    }
+  }
+}
+let lruCache = new LRUCache(10)
 ```
-  
 
+### 6. 代理模式
+  概述：解决一个对象不能直接引用另外一个对象，通过代理对象在两个对象之间起到中介作用  
+```ts
+class Google{
+  get(url){
+    // todo url
+    return 'google'
+  }
+}
+class Proxy{
+  constructor(){
+    this.google = new Google()
+  }
+  get(url){
+    return this.google.get(url)
+  }
+}
+// 用户
+let proxy = new Proxy()
+let response = proxy.get('https://www.google.com')
+// google
+```
+  1. 应用场景  
+   1.1 代理缓存: 为开销大的计算结果提供暂时的存储  
+```ts
+// 普通版
+function multi(i){
+  if(i<=1){
+    return i
+  }else{
+    return i*multi(i-1)
+  }
+}
+function sum(n){
+  let res = 0
+  for(let i=1;i<=n;i++){
+    res += multi(i)
+  }
+  return res
+}
+// 使用
+console.time('cost')
+console.log(sum(100000))
+console.timeEnd('cost')
+// cost: 864.262939453125 ms
+```
+```ts
+// 使用代理缓存
+let sum = (function(){
+  let cache = {}
+  function multi(i){
+    if(i<=1){
+      return i
+    }else{
+      return i*(cache[i-1]||multi(i-1))  // 直接返回计算过的结果
+    }
+  }
+  return function (n){
+    let result = 0
+    for(let i=1;i<=n;i++){
+      let ret = multi(i)
+      cache[i] = ret // 从1开始，每个阶乘都放入缓存
+      result += ret
+    }
+    return result
+  }
+})()
+// 使用
+console.time('cost')
+console.log(sum(100000))
+console.timeEnd('cost')
+// cost: 14.1748046875 ms
+```
+   1.2 $.proxy: jQuery的proxy实现，接口一个函数和上下文，返回一个保持特定上下文的新函数  
+       原理：使用apply call bind实现  
+   1.3 Proxy
+       修改某些操作的默认行为  
+       代理器：对外界对访问进行过滤和拦截  
+       典型例子：vue对数组方法进行函数劫持，增加了数据观察  
+              vue3对数据观察进行了重写，完全拥抱Proxy  
+```ts
+let watxon={}
+let targat=new Proxy(watson,{
+  get(){},
+  set(){}
+})
+```
+   1.4 事件委托  
+       事件捕获：从document到触发事件的目标节点，自上而下  
+       事件冒泡：从触发的目标节点到document，自下而上  
+       绑定事件方法的第三个参数：控制事件触发顺序是否为事件捕获，true为事件捕获，false为事件冒泡，默认false  
+```ts
+// 实现图片的懒加载
+// 加载图片功能
+let Background = (function(){
+  let img = new Image()
+  bgimg.appendChild(img)
+  return {
+    setSrc(src){
+      img.src = src
+    }
+  }
+})()
+// 增强效果功能 拓展了加载图片功能
+let ProxyBackGround = (function(){
+  let img = new Image()
+  img.onload = function(){
+    Background.setSrc(this.src)
+  }
+  return {
+    setSrc(src){
+      Background.setSrc('/loading.fig')
+      img.src = src
+    }
+  }
+})()
+// 用户使用
+let src = '/bg.png'
+ProxyBackGround.setSrc(src)
+```
+   1.5 防抖代理  
+```ts
+let lazyToggle = (function(){
+  let ids = []
+  let timer;
+  return function(id) {
+    ids.indexOf(id) === -1 ? ids.push(id) : null
+    if (!timer) {
+      timer = setTimeout(function(){
+        toggle(ids.join(','))
+        clearTimeout(timer)
+        ids.length = 0
+        timer = null
+      },2000)
+    }
+  }
+})()
+```
 
 
