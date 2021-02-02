@@ -515,4 +515,67 @@ let lazyToggle = (function(){
 })()
 ```
 
+### 6. 外观模式 & 观察者模式
+  6.1 外观模式
+    概述：把复杂的流程封装成一个接口供外部使用  
+    三种角色：  
+      1.门面角色：被客户端调用，熟悉子系统功能  
+      2.子系统角色：实现了子系统的功能  
+      3.客户角色：调用Facede实现功能  
+    例子：1.实现计算器  
+         2.vue的初始化  
+    场景：1.接耦合，将客户端和内部子系统之间隔离，只提供对外接口  
+         2.子系统之间相互隔离  
+  6.2 观察者模式  
+    概述：在被观察者发生变化时候，调用观察者的更新方法  
+    特性：1.观察者和被观察者是耦合的  
+         2.dep的update更新是观察者Observe来调用的  
+    例子：1.事件处理 addEventLiener  
+         2.Promise原理  
+         3.jQuery的callbacks原理  
+         4.node的EventEmitter类  
+```ts
+class Observe(){
+  constructor(){
+    this.deps = []
+  }
+  attach(dep) {
+    this.deps.push(dep)
+  }
+  notify() {
+    this.deps.forEach(dep => dep.update())
+  }
+}
+class Dep() {
+  constructor(){
+    this.deps = []
+  }
+  update(){
+    // todo
+  }
+}
+```
+```ts
+// Promise 实现原理
+class Promise{
+  constructor(fn){
+    this.successes = []
+    let resolve = (data) => {
+      this.successes.forEach(item => item(data))
+    }
+    fn(resolve)
+  }
+  then(success){
+    this.successes.push(success)
+  }
+}
+let p = new Promise(function(resolve){
+  setTimeout(function(){
+    resolve('ok')
+  },2000)
+})
+// p.then(data=>console.log(data))
+
+```
+
 
