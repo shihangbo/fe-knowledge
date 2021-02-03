@@ -2,6 +2,8 @@
 # 设计模式
 
 ### 1. 面向对象
+  0. 软件开发经历分析，设计和编码三个阶段  
+  1. 以【类和对象】作为组件代码的基本单位，实现抽象，封装，继承，多态四个特性
   1. 抽象：把客观事物抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来
   2. 封装：把同一类型的客观对象的属性数据和操作绑定在一起，封装成类
     2.1 public：公有修饰符，在类内或者外部使用，默认
@@ -554,6 +556,11 @@ class Dep() {
     // todo
   }
 }
+
+let obs = new Observe()
+let dep = new Dep()
+obs.attach(dep)
+obs.notify()
 ```
 ```ts
 // Promise 实现原理
@@ -577,5 +584,63 @@ let p = new Promise(function(resolve){
 // p.then(data=>console.log(data))
 
 ```
+  6.3 发布订阅模式  
+    1.订阅者  
+    2.发布者  
+    3.调度中心  
+```ts
+// 调度中心
+class Agent{
+  constructor(){
+    this._events={}
+  }
+  subscribe(type,listener){
+    let listeners = this._events[type]
+    if(listeners){
+      listeners.push(listener)
+    }else{
+      this._events[type]=[listener]
+    }
+  }
+  publish(type){
+    let listeners = this._events[type]
+    let args = Array.prototype.slice.call(arguments,1)
+    if(listeners){
+      listeners.forEach(listener=>listener(...args))
+    }
+  }
+}
+// 发布者
+class Dep{
+  constructor(name){
+    this.name = name
+  }
+  lend(agent,money){
+    agent.publish('house',money)
+  }
+}
+// 订阅者
+class Observe{
+  constructor(name){
+    this.name = name
+  }
+  rent(agent){
+    agent.subscribe('house',(money)=>{
+      console.log(this.name, money)
+    })
+  }
+}
+// 使用
+let agent = new Agent()
+let obs1 = new Observe('aaa')
+let obs2 = new Observe('bbb')
+obs1.rent(agent)
+obs2.rent(agent)
+let dep = new Dep()
+dep.lend(agent, 1000)
+```
+
+
+
 
 
