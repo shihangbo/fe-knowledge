@@ -4,15 +4,50 @@
 ### 1. 面向对象
   0. 软件开发经历分析，设计和编码三个阶段  
   1. 以【类和对象】作为组件代码的基本单位，实现抽象，封装，继承，多态四个特性
-  1. 抽象：把客观事物抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来
-  2. 封装：把同一类型的客观对象的属性数据和操作绑定在一起，封装成类
-    2.1 public：公有修饰符，在类内或者外部使用，默认
-    2.2 protected：受保护的，在本类和子类中使用
-    2.3 private：私有的，只能在本类内部使用
-  3. 继承：并且允许不同层次进行抽象，通过继承实现属性和操作的共享
-  4. 多态：
-    4.1 同一个接口可以不同现实，保持子类的开放性和灵活性，面向接口编程
-
+    1.1 抽象：把客观事物抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来，让调用者只关心功能而不是关心功能的实现  
+             提高代码的可拓展性和可维护性  
+```ts
+interface IStrorage{
+  save(key:any,value:any): void
+  read(key:any): void
+}
+class LocalStorage{
+  save(){}
+  read(){}
+}
+class Cookie{
+  save(){}
+  read(){}
+}
+// 固定的
+class User{
+  constructor(public name:string, public storage:IStrorage){
+    this.name = name
+    this.storage = storage
+  }
+  save(){
+    this.storage.save()
+  }
+  read(){
+    this.storage.read()
+  }
+}
+let user = new User('watson', new LocalStorage())
+user.save()
+user.read()
+```
+    1.2 封装：把同一类型的客观对象的属性数据和操作绑定在一起，封装成类，并且把部分内容属性隐藏起来，与外界隔离，即保护类的隐私同时提高类的易用性  
+      2.1 public：公有修饰符，在类内或者外部使用，默认
+      2.2 protected：受保护的，在本类和子类中使用
+      2.3 private：私有的，只能在本类内部使用
+    1.3 继承：子类可以继承父类，实现属性和操作的共享，抽离公用方法，提高复用，减少冗余  
+    2.4 多态：子类可以替换父类，子类可以重写父类的方法，保持子类的开放性和灵活性，同一个接口不同子类可以有不同现实，面向接口编程  
+      2.4.1 ts支持抽象类 abstract
+```ts
+abstract class Animal{
+  abstract speak(): void
+}
+```
 ### 2. ts
   1. 静态类型校验
   2. 接口 interface，相当自定义类型 
@@ -42,11 +77,11 @@
     1.2 功能相同，可以有不同设计的方式
     1.3 需求如果不断变化，设计的作用才能体现出来
   2. SOLID 五大设计原则
-    2.1 S 单一职责原则: single responsibility principle 单一功能，一个程序只做好一件事，进行拆分，vue源代码的文件系统，拆分不同的代码块，保持整个代码的整洁，便于维护  
-    2.2 O 开放封闭原则: open close principle，对拓展开放，对修改封闭，新增需求时拓展新代码，而非修改已有代码，vue的合并策略，针对不同的属性，data/methods/生命周期/watcher等等进行不同的合并，后续增加新的属性，只要增加新的合并策略规则即可    
-    2.3 L 里氏替换原则: liskov substitution principle，子类能覆盖父类，子类能够实现父类方法，保持子类灵活性，vue2 检测数组变化就是重写了数组7个方法（push/shift/unshift/sort/reverse/splice/pop），父类能出现的地方子类就能出现，js使用比较少   
-    2.4 I 接口隔离原则: interface segregation principle，保持接口的单一独立，避免出现胖接口，js使用比较少  
-    2.5 D 依赖反转原则: dependence inversion principle，面向接口编程，依赖于抽象实现，js使用比较少  
+    2.1 S 单一职责原则: single responsibility principle 【单一功能】，一个程序只做好一件事，进行拆分，vue源代码的文件系统，拆分不同的代码块，保持整个代码的整洁，便于维护  
+    2.2 O 开放封闭原则: open close principle，【对拓展开放，对修改封闭】，新增需求时拓展新代码，而非修改已有代码，vue的合并策略，针对不同的属性，data/methods/生命周期/watcher等等进行不同的合并，后续增加新的属性，只要增加新的合并策略规则即可    
+    2.3 L 里氏替换原则: liskov substitution principle，程序中的对象应该是可以在不改变程序正确性的前提下【被他的子类所替换】   
+    2.4 I 接口隔离原则: interface segregation principle，【多个特定客户端接口好于一个宽泛用途的接口】  
+    2.5 D 依赖反转原则: dependence inversion principle，一个方法应该遵从【依赖于抽象儿不是实例】，依赖注入是改原则的一种实现  
 
 ### 4. 工厂模式
   1. 简单工厂模式
