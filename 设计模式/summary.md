@@ -6,6 +6,7 @@
   1. 以【类和对象】作为组件代码的基本单位，实现抽象，封装，继承，多态四个特性
     1.1 抽象：把客观事物抽象成属性数据和对数据的相关操作，把内部细节信息隐藏起来，让调用者只关心功能而不是关心功能的实现  
              提高代码的可拓展性和可维护性  
+             例子：缓存
 ```ts
 interface IStrorage{
   save(key:any,value:any): void
@@ -41,6 +42,7 @@ user.read()
       2.2 protected：受保护的，在本类和子类中使用
       2.3 private：私有的，只能在本类内部使用
     1.3 继承：子类可以继承父类，实现属性和操作的共享，抽离公用方法，提高复用，减少冗余  
+             例子：原型模式
     2.4 多态：子类可以替换父类，子类可以重写父类的方法，保持子类的开放性和灵活性，同一个接口不同子类可以有不同现实，面向接口编程  
       2.4.1 ts支持抽象类 abstract
 ```ts
@@ -79,9 +81,82 @@ abstract class Animal{
   2. SOLID 五大设计原则
     2.1 S 单一职责原则: single responsibility principle 【单一功能】，一个程序只做好一件事，进行拆分，vue源代码的文件系统，拆分不同的代码块，保持整个代码的整洁，便于维护  
     2.2 O 开放封闭原则: open close principle，【对拓展开放，对修改封闭】，新增需求时拓展新代码，而非修改已有代码，vue的合并策略，针对不同的属性，data/methods/生命周期/watcher等等进行不同的合并，后续增加新的属性，只要增加新的合并策略规则即可    
-    2.3 L 里氏替换原则: liskov substitution principle，程序中的对象应该是可以在不改变程序正确性的前提下【被他的子类所替换】   
+    2.3 L 里氏替换原则: liskov substitution principle，程序中的对象应该是可以在不改变程序正确性的前提下【被他的子类所替换】
+                      要求子类不能违反父类的功能和规定，父类的方法返回number，子类的同方法必须返回number   
     2.4 I 接口隔离原则: interface segregation principle，【多个特定客户端接口好于一个宽泛用途的接口】  
-    2.5 D 依赖反转原则: dependence inversion principle，一个方法应该遵从【依赖于抽象儿不是实例】，依赖注入是改原则的一种实现  
+```ts
+// 推荐
+interface Running{
+  run():void;
+}
+interface Flying{
+  fly():void;
+}
+interface Swimming{
+  swim():void;
+}
+// 避免定义如下胖接口
+interface AutomobileInterface{
+  run():void;
+  fly():void;
+  swim():void;
+}
+class Automobile implements Running,Flying,Swimming{
+  run(){}
+  fly(){}
+  swim(){}
+}
+```
+    2.5 D 依赖反转原则: dependence inversion principle，一个方法应该遵从【依赖于抽象而不是实例】，依赖注入是改原则的一种实现  
+                      例子：找女朋友，先想象女朋友是什么样子(性格好的，漂亮的...)，而不能喜欢angularBaby就找她，一辈子单身  
+```ts
+// 定义接口
+interface GirlFriend{
+  age:number;
+  height:number;
+  cook(): void;
+}
+// 实现接口
+class Lin implements GirlFriend{
+  public cook():void{}
+}
+class Mei implements GirlFriend{
+  public cook():void{}
+}
+class SingleDoy{
+  constructor(public girlfriend: GirlFriend){}
+}
+let dog1 = new SingleDog(new Lin())
+let dog2 = new SingleDog(new Mei())
+```
+    2.6 最少知识原则: 迪米特法则，降低类之间的耦合，实现内聚，少用public多用private protected  
+                    例子：层级管理，ceo - 销售经理 - 销售  
+    2.7 合成复用原则: 尽量使用聚合/组合的方式，而不是继承实现代码  
+                    类之间有三种基本关系，关联(聚合和组合)，泛化和依赖  
+                    依赖：另外一个类是当前类的方法和属性，例如学生读书，学生和书之前有依赖关系，关系最弱  
+                    关联：单项关联，双向关联，关系弱  
+                    聚合：班级和学生，一个班里面有很多学生，班级没了学生还在，关系中等  
+                    组合：人和心脏，心脏是组成人的一个部分，关系最强  
+                    泛化：数学老师和老师，老师就是数学老师的泛化  
+```ts
+class Cooker{
+  cook(){}
+}
+// 不推荐 - 将自己变成一个厨师
+class Person1 extends Cooker{
+
+}
+// 推荐 - 将厨师变成自己的一个属性
+class Person2{
+  private cooker: Cooker
+  cooker(){
+    this.cooker.cook()
+  }
+}
+```
+    2.8 总结: 开闭原则是核心，是软件设计的基石  
+             单一职责是编码的基本要求  
+             里氏替换原则，接口隔离原则，依赖反转原则构建大型项目  
 
 ### 4. 工厂模式
   1. 简单工厂模式
@@ -674,6 +749,10 @@ obs2.rent(agent)
 let dep = new Dep()
 dep.lend(agent, 1000)
 ```
+### 6. 原型模式  
+  6.1 原型链 画图 __proto__  prototype  
+  6.2 instanceof  
+  6.3 原型链上的方法， Object.prototype.toString === Array.prototype.toString  // false  
 
 
 
