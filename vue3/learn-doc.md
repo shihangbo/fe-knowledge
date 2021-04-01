@@ -73,3 +73,14 @@ destoryed     -> unmounted     -> onUnmounted
 onRenderTracked
 onRenderTriggered 检查哪个依赖导致组件的重新渲染
 ```
+
+#### 5.hook函数
+使用组合API封装的可复用的功能函数  
+优势：代码分割，高可复用性，优于mixin技术  
+
+
+#### 6.toRefs
+toRefs把一个响应式对象转成普通对象，该普通对象的每个property都是一个ref  
+应用：当从合成函数返回响应式对象时，toRefs非常有用，这样子消费组件就可以在不丢失响应式情况下对返回对对象进行分解使用  
+问题：reactive对象取出所有属性值都是非响应式对  
+解决：利用toRefs可以将一个响应式reactive对象的所有原始属性转换为响应式ref属性   
