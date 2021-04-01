@@ -120,3 +120,25 @@ toRefs把一个响应式对象转成普通对象，该普通对象的每个prope
     }
   }
 ```
+
+#### 7.其他组合API
+1.shallowReactive  
+shallowReactive：只处理对象第一层属性的响应式，也就是浅响应式  
+应用场景：如果一个对象数据，结构比较深，但变化时只是外层属性变化 -> shallowReactive  
+2.shallowRef  
+shallowRef：只处理value的响应式，不进行对象的reactive处理  
+应用场景：如果一个对象数据，后面会产生新的对象来替换 -> shallowRef  
+3.readonly
+4.shallowReadonly
+5.toRow
+6.markRow
+7.toRef 与 ref 的区别
+toRef为响应式对象上的某个属性创建一个ref对象，二者内部操作的是同一个数据值，更新是二者是同步的  
+ref是拷贝一份新的数据值进行单独操作，更新时相互不影响  
+应用：当要将某个prop的ref传递给复合函数时，toRef很有用  
+8.customRef
+9.provide 和 inject
+实现跨层级组件间通信  
+
+
+### 新组件
