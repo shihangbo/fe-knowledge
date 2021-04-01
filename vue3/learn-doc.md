@@ -140,15 +140,34 @@ ref是拷贝一份新的数据值进行单独操作，更新时相互不影响
 9.provide 和 inject
 实现跨层级组件间通信  
 
-
 ### 新组件
-1.Fragment - 片段
+1.Fragment - 片段  
 ```ts
 1.vue2中，组件必须有跟元素
 2.vue3中，组件可以没有跟元素，内部会将多个标签包含在一个fragment虚拟元素中
 3.好处，减少标签层级，减小内存占用
 ```
-2.Teleport - 瞬移
+2.Teleport - 瞬移  
 ```ts
-teleport提供一个干净的方法，让组件的html在父组件界面外的特定标签（可能是body）下插入显示
+Teleport提供一个干净的方法，让组件的html在父组件界面外的特定标签（可能是body）下插入显示
+```
+3.Suspense - 不确定的组件  
+允许应用在等待异步组件时渲染一些后备内容，提升应用的用户体验  
+```ts
+  //引入组件：静态 和 动态
+  //vue2中动态引入组件
+  const AsyncComponent2 = () => import('./AsyncComponent.vue')
+  //vue3中动态引入组件
+  const AsyncComponent3 = defineAsyncComponent(() => import('./AsyncComponent.vue'))
+```
+
+
+### 总结
+```ts
+//vue2 与 vue3升级
+1.重写vue的响应式系统，vue3使用Proxy配合Reflect代理 替代了 vue2使用Object.defineProperty方法 实现数据的响应式
+2.重写虚拟DOM
+3.新加3个组件: Fragment, Teleport, Suspense
+4.新的脚手架工具: vite
+5.结合hook函数，整体代码布局的改变，特别是提高代码可复用性
 ```
