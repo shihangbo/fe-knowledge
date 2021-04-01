@@ -84,3 +84,39 @@ toRefs把一个响应式对象转成普通对象，该普通对象的每个prope
 应用：当从合成函数返回响应式对象时，toRefs非常有用，这样子消费组件就可以在不丢失响应式情况下对返回对对象进行分解使用  
 问题：reactive对象取出所有属性值都是非响应式对  
 解决：利用toRefs可以将一个响应式reactive对象的所有原始属性转换为响应式ref属性   
+```ts
+  // toRefs把一个响应式对象转成普通对象，该普通对象的每个property都是一个ref  
+  setup(){
+    const state = toRefs({
+      name: 'watson',
+      age: 18
+    })
+    return {
+      ...state
+    }
+  }
+```
+```ts
+  // 当从合成函数返回响应式对象时，toRefs非常有用，这样子消费组件就可以在不丢失响应式情况下对返回对对象进行分解使用 
+  function useFeature() {
+    const state = reactive({
+      name2: 'watson2',
+      age2: 18
+    })
+    return {
+      ...toRefs(state)
+    }
+  }
+  setup(){
+    const state = toRefs({
+      name: 'watson',
+      age: 18
+    })
+    const {name2, age2} = useFeature()
+    return {
+      ...state,
+      name2,
+      age2
+    }
+  }
+```
