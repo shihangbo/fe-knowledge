@@ -19,6 +19,7 @@
     * [递归](JavaScript/recursion.md)
     * [Promise](JavaScript/promise.md)
     * [内置对象实现](JavaScript/native.md)
+    * [重学前端](JavaScript/reLearnFE.md)
 * [webpack](webpack/README.md)
     * [概述](webpack/summary.md)
     * [coding](webpack/codding.md)
