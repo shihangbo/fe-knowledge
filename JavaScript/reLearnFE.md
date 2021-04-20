@@ -3,7 +3,7 @@
 ### 1.js
 ```html
 1. 用一定文法（词法和语法），表达一定语义，从而操作运行时
-2. 7种基本类型：Number,String,Null,Undefined,Symbol,Boolean
+2. 6种基本类型：Number,String,Null,Undefined,Symbol,Boolean
 3. 7种语言类型：Undefined,Null,Boolean,Number,String,Symbol,Object
 4. 为什么有的编程规范要求用 void 0 代替 undefined？
 因为 JavaScript 的代码 undefined 是一个变量，而并非是一个关键字，这是 JavaScript 语言公认的设计失误之一，所以，我们为了避免无意中被篡改，我建议使用 void 0 来获取 undefined 值
@@ -16,6 +16,11 @@ JavaScript 中的 Number 类型基本符合 IEEE 754-2008 规定的双精度浮�
 应用场景：允许编写与语言结合更紧密的 API，可以使用 Symbol.iterator 来自定义 for…of 在对象上的行为
 9. 为什么给对象添加的方法能用在基本类型上？
 . 运算符提供了装箱操作，它会根据基础类型构造一个临时对象，使得我们能在基础类型上调用对应对象的方法
+10.装箱转换：每一种基本类型Number/String/Boolean/Symbol在对象中都有对应的类，装箱转换正是把基本类型转换为对应的对象；它产生一个个临时对象，通过这个临时对象获取到对应类的属性和方法；  
+11.拆箱转换：ToPrimitive函数，是对象类型到基本类型的转换。拆箱转换会尝试调用 valueOf 和 toString 来获得拆箱后的基本类型。如果 valueOf 和 toString 都不存在，或者没有返回基本类型，则会产生类型错误 TypeError。
+12.NaN !== NaN
+
+
 ``` 
 
 ### 2.HTML和CSS
