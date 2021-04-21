@@ -1,7 +1,7 @@
 
 ### 1. Object.create
 ```ts
-Object.create = function(proto) {
+Object.create = function(proto, args) {
   function F(){}
   F.prototype = proto
   return new F()
