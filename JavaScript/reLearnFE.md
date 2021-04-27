@@ -47,7 +47,8 @@ var f = Object.assign({k1:3, k2:8}, {k3: 9})
 var g = JSON.parse('{}')
 4.利用装箱转换: var h = Object(undefined), i = Object(null), k = Object(1), l = Object('abc'), m = Object(true)
 19.Promise 里面的代码为什么比 setTimeout 先执行？
-
+- 宿主发起的任务称为宏任务，js引起发起的任务称为微任务，js引擎等待宿主环境分配宏任务，这个等待-执行的过程，称为“事件循环”
+- Promise 
 
 
 
