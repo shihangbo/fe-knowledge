@@ -1,7 +1,7 @@
 ## 重学前端
 
 ### 1.js
-```html
+```ts
 1. 用一定文法（词法和语法），表达一定语义，从而操作运行时
 2. 6种基本类型：Number,String,Null,Undefined,Symbol,Boolean
 3. 7种语言类型：Undefined,Null,Boolean,Number,String,Symbol,Object
@@ -55,6 +55,8 @@ var g = JSON.parse('{}')
 21.this
 - 调用函数（普通函数，调用类里面定义的函数除外）时使用的引用，决定了函数执行时刻的this值
 - 箭头函数的this值，取决于函数定义时的环境
+- this 机制：通过作用域链查找属性
+- 操作this的内置函数：call / apply / bind（生成一个绑定过的函数，这个函数的this值固定），但是他们无法改变箭头、class的this
 
 
 
@@ -64,6 +66,23 @@ var g = JSON.parse('{}')
 ### 2.HTML和CSS
 
 ### 3.浏览器实现原理与API
+```ts
+1. 从输入url开始，浏览器做了什么？
+- 浏览器首先使用 HTTP 协议或者 HTTPS 协议，向服务端请求页面；
+- 把请求回来的 HTML 代码经过解析，构建成 DOM 树；
+- 计算 DOM 树上的 CSS 属性；进行CSS计算，排版，渲染和合成，最后绘制
+- 同时js开始执行...
+2. http
+- http协议是基于TCP协议，TCP协议是一条双向通讯通道，HTTP在TCP基础上，规定了Request-Response模式，通讯必定由浏览器端首先发起
+- https 的两个作用
+  - 确定请求的目标服务端身份
+  - 保证传输的数据不会被网络中间节点窃听或者篡改（使用加密通道来传输http内容）
+- http2 最大的2个改进
+  - 支持服务端推送
+  - 支持TCP链接复用
+
+
+```
 
 ### 3.前端综合应用
 
