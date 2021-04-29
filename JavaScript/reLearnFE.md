@@ -80,6 +80,12 @@ var g = JSON.parse('{}')
 - http2 最大的2个改进
   - 支持服务端推送
   - 支持TCP链接复用
+3. HTML解析
+- 字符流 -> token -> DOM树
+- token
+- 词法状态机 如'<'开头为标签状态
+- LexicalParser 将字节流转换成token
+- SyntaticalParser HTML词法分析器 将token转化成DOM树
 
 
 ```
