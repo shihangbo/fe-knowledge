@@ -81,11 +81,16 @@ var g = JSON.parse('{}')
   - 支持服务端推送
   - 支持TCP链接复用
 3. HTML解析
-- 字符流 -> token -> DOM树
+- 字符流 -> token -> DOM树/匹配CSS属性 -> 排版
 - token
 - 词法状态机 如'<'开头为标签状态
 - LexicalParser 将字节流转换成token
 - SyntaticalParser HTML词法分析器 将token转化成DOM树
+- DOM的构建和（head中的）CSS属性匹配是同步进行的
+- 浏览器最基本的排版方案是正常流排版（包含文字排版规则/行模型/盒模型），在正常流的基础上支持两类元素：绝对定位元素和浮动元素
+- 除了正常流，还有Flex排版，由 display 属性控制
+- 盒模型：通过display属性控制，分两种‘带inline-’行内级盒和‘block’块级盒，具有margin、border、padding、width、height等属性，通过这些属性在主轴方向占据空间，通过 vertical-align 属性控制盒在交叉轴方向的位置
+
 
 
 ```
