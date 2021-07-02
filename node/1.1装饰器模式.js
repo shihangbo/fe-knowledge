@@ -1,14 +1,16 @@
 
 // 装饰器模式，切片模式
-function core () {
-  console.log('core...')
+// this 使用闭包实现
+function core (args) {
+  console.log('core...', args)
 }
 
 Function.prototype.before = function (beforeFn) {
   // this = core
-  return () => {
+  // 闭包：定义函数的作用域 和 调用的作用域 不一致
+  return (...args) => { // 箭头函数没有this，没有argumens，没有prototype
     beforeFn()
-    this()
+    this(args)
   }
 }
 
@@ -16,4 +18,4 @@ let newFn = core.before(() => {
   console.log('core before...')
 })
 
-newFn()
+newFn(1,2,3)
