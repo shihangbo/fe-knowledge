@@ -2,7 +2,7 @@
 // vue2
 // 基于发布订阅
 
-class Sub() {
+class Sub() { // 被观察者
   construcutor(name) {
     this.name = name
     this.observers = []
@@ -23,7 +23,7 @@ class Sub() {
   }
 }
 
-class Observer() {
+class Observer() {  // 观察者
   construcutor(name) {
     this.name = name
   }
