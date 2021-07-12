@@ -41,3 +41,15 @@ console.log(path.dirname('a/b/c')) // 获取当前文件或者目录的，父级
   // 包装为一个函数
   // 通过runInThisContent转成js语法
   // 调用
+
+
+// node 中如何加载模块
+  // 1.require方法 -> Module.prototype.require 方法
+  // 2.Module._load 加载模块
+  // 3.Module._resolveFilename 方法就是把路径变成绝对路径，添加后缀名(.js .json)
+  // 4.new Module 拿到绝对路径创造一个模块，this.id exports={}
+  // 5.module.load 对模块进行加载
+  // 6.根据文件后缀 Module._extensions['.js'] 做策略加载
+  // 7.用的是同步读取文件 fs.readFileSync
+  // 8.组装成函数，并且让函数执行，指定 this 为 module.exports
+  // 9.返回 module.exprts
