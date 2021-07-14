@@ -1,0 +1,17 @@
+
+1. generator：通过一个函数，通过switch case封装成不通过的步骤，
+  通过调用next获取value和done，根据value和done去做对应处理
+  迭代器：generator函数
+  生成器：调用迭代器返回一个生成器函数，调用生成器函数，获取value和done
+  co：让gen函数自动执行
+  generator + co：co(gen()) 生成promise
+  async await的原理：generator + co的语法糖
+2.Eventlooop
+  浏览器运行机制：扫描宏任务队列，拿到队列顶部执行
+  node运行机制：
+  script执行时默认是宏任务，在执行的过程中会创造属于自己的微任务和宏任务，微任务之后判断是否渲染页面
+  宏任务每轮执行一次，微任务队列每次清空，浏览器渲染时间到了才执行16.6s
+3.await => promise.resolve(await后面的代码).then(await下面的代码)
+  如果promise 成功和失败的回调返回一个promise，内部会多产生一个thenjob，默认返回一个promise会产生两次then
+  
+
