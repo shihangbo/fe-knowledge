@@ -37,3 +37,5 @@ let tree = new Tree()
   tree.add(element)
 })
 console.dir(tree, {depth: 1000})
+
+// 遍历树，先序，中序，层序
