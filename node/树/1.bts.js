@@ -40,13 +40,26 @@ class Tree {
     }
     traversal(this.root)
   }
-  levelOrderTraversal() {
+  levelOrderTraversal(cb) {
     // 广度优先
     let stack = [this.root]
     let index = 0
     let currentNode;
     while(currentNode = stack[index++]) {
-      console.log(currentNode.element) // 10 8 19 6 15 22 20
+      cb(currentNode) // 10 8 19 6 15 22 20
+      currentNode.left && stack.push(currentNode.left)
+      currentNode.right && stack.push(currentNode.right)
+    }
+  }
+  // 二叉树的反转
+  reverse() {
+    let stack = [this.root]
+    let index = 0
+    let currentNode;
+    while(currentNode = stack[index++]) {
+      let temp = currentNode.left
+      currentNode.left = currentNode.right
+      currentNode.right = temp
       currentNode.left && stack.push(currentNode.left)
       currentNode.right && stack.push(currentNode.right)
     }
@@ -59,10 +72,19 @@ let tree = new Tree()
   tree.add(element)
 })
 // console.dir(tree, {depth: 1000})
+
+// 遍历树
+// - 先序（深度优先），中序（左边优先，有顺序的节点遍历，从左往右），层序（广度优先）
+// - 递归 or 非递归（栈优化）
 tree.preorderTraversal()  // 深度优先
-// tree.levelOrderTraversal()// 广度优先
-// 遍历树，先序（深度优先），中序（左边优先，有顺序的节点遍历，从左往右），层序（广度优先）
-// 递归 or 非递归（栈优化）
+tree.levelOrderTraversal((node) => { // 广度优先
+  // 思想：webpack - ast/babel树的遍历，需要在遍历的过程中将当前节点传递出来使用 -> 回调函数
+  console.log(node.element)
+})
+
+// 二叉树的反转
+tree.reverse()
+console.dir(tree, {depth: 1000})
 
 
 
