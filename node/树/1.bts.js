@@ -30,12 +30,42 @@ class Tree {
     // 大于存在
     compare ? parent.right = node : parent.left = node
   }
+  preorderTraversal() {
+    // 深度优先
+    function traversal(node) {
+      if (node == null) return
+      console.log(node.element) // 10 8 6 19 15 22 20
+      traversal(node.left)
+      traversal(node.right)
+    }
+    traversal(this.root)
+  }
+  levelOrderTraversal() {
+    // 广度优先
+    let stack = [this.root]
+    let index = 0
+    let currentNode;
+    while(currentNode = stack[index++]) {
+      console.log(currentNode.element) // 10 8 19 6 15 22 20
+      currentNode.left && stack.push(currentNode.left)
+      currentNode.right && stack.push(currentNode.right)
+    }
+  }
+
 }
 
 let tree = new Tree()
-![10, 8, 19, 6, 25, 20].forEach(element => {
+![10, 8, 19, 6, 15, 22, 20].forEach(element => {
   tree.add(element)
 })
-console.dir(tree, {depth: 1000})
+// console.dir(tree, {depth: 1000})
+tree.preorderTraversal()  // 深度优先
+// tree.levelOrderTraversal()// 广度优先
+// 遍历树，先序（深度优先），中序（左边优先，有顺序的节点遍历，从左往右），层序（广度优先）
+// 递归 or 非递归（栈优化）
 
-// 遍历树，先序，中序，层序
+
+
+
+
+
