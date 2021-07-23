@@ -8,6 +8,7 @@ const mime = require('mime')
 const {createReadStream, readFileSync} = require('fs')
 const ejs = require('ejs')
 const crypto = require('crypto')
+const zlib = require('zlib')
 
 const template = readFileSync(path.resolve(__dirname, 'template.html'), 'utf8')
 let interfaces = os.networkInterfaces()
@@ -75,6 +76,25 @@ class Server {
     return true
   }
   // 压缩
+  gzipFile(req, res, requestFile, statObj) {
+    // 检查浏览器 是否支持压缩，eccpet-encoding字段
+    // 优化方案
+    // - 根据文件的不同类型，指定压缩方案，并不是所有是文件都适合压缩
+    // - 重复率高的文件适合做压缩，例如.html .css .js
+    // - 图片/视频文件，不适合做压缩，直接返回即可
+    const encodings = req.headers['accept-encoding']
+    if (encodings) {
+      if (encodings.includes('gzip')) {
+        res.setHeader('Content-Encoding', 'gzip')
+        return zlib.createGzip()
+      } else if (encodings.includes('deflate')) {
+        res.setHeader('Content-Encoding', 'deflate')
+        return zlib.createDeflate()
+      }
+      return false
+    }
+    return false // 浏览器不支持
+  }
   handleRequest = async (req, res) => {
     let {pathname} = url.parse(req.url)
     pathname = decodeURIComponent(pathname)
@@ -92,18 +112,26 @@ class Server {
         res.setHeader('Content-Type', 'text/html;charset=utf-8')
         res.end(fileContent)
       } else {
-        // 缓存
+        // 创建缓存
         if (this.cacheFile(req, res, requestFile, statObj)) {
           // 协商缓存结果，去浏览器缓存读取静态资源 返回304
           res.statusCode = 304
           // 服务器没有响应结果
-          res.end()
-        } else {
-          // 文件，设置文件类型，编码格式
-          res.setHeader('Content-Type', `${mime.getType(requestFile)};charset=utf-8`)
-          // res.end('文件')
-          createReadStream(requestFile).pipe(res)
+          return res.end()
         }
+
+        // 文件，设置文件类型，编码格式
+        res.setHeader('Content-Type', `${mime.getType(requestFile)};charset=utf-8`)
+
+
+        // 创建压缩流
+        let gzipFileRow;
+        if (gzipFileRow = this.gzipFile(req, res, requestFile, statObj)) {
+          return createReadStream(requestFile).pipe(gzipFileRow).pipe(res)
+        }
+
+        // res.end('文件')
+        createReadStream(requestFile).pipe(res)
       }
     } catch (e) {
       this.sendError(req, res, e)
