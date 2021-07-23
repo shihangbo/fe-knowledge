@@ -27,6 +27,7 @@ class Server {
     this.gzip = serverOptions.gzip
     this.template = template
   }
+  // 缓存
   cacheFile(req, res, requestFile, statObj) {
     // 缓存优化
       // 优化方案1: 强制缓存 + 协商缓存 -> 比修改时间，性能好
@@ -73,6 +74,7 @@ class Server {
     }
     return true
   }
+  // 压缩
   handleRequest = async (req, res) => {
     let {pathname} = url.parse(req.url)
     pathname = decodeURIComponent(pathname)
