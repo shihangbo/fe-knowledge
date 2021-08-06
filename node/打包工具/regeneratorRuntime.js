@@ -1,3 +1,29 @@
+// 实现 regeneratorRuntime对象
+class Context {
+  next=0
+  done=false
+  stop(){
+    this.done = true
+  }
+}
+const regeneratorRuntime = {}
+regeneratorRuntime.mark = (generator)=>{
+  // 源码中有一些操作，不重要
+  return generator
+}
+regeneratorRuntime.wrap = (generator$, _mark)=>{
+  let iterator = Object.create(_mark.prototype)
+  let context = new Context()
+  iterator.next = (args) => {
+    context.sent = args
+    let value = generator$(context)
+    return {
+      value,
+      done:context.done
+    }
+  }
+  return iterator
+}
 
 // 原始代码
 function* generator() {
@@ -50,3 +76,5 @@ console.log(g.next());
 console.log(g.next('11111'));
 console.log(g.next('22222'));
 console.log(g.next('33333'));
+
+
