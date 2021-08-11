@@ -25,9 +25,25 @@
   - computed 也是一个watcher，具备缓存，只当依赖的属性发生变化时才会执行方法
   - 源码：initComputed方法，创建的watcher具备lazy=true dirty=true，默认不执行，然后将计算属性定义到实例上(defineComputed，vm['计算属性']，通过OB且重新定义的computedGetter方法，可真正获取当前computed属性的值)，当依赖属性创建并取值时，才执行方法，执行的时候会根据依赖属性是否变化，进行判断是否重新执行方法重新取值
 7. watch原理
-  - 计算属性computed：lazy=true dirty=true
-  - 同步watcher：aync=true
-  - 渲染watcher：queueWatcher(this)
+  - computedWatcher计算属性：lazy=true dirty=true
+  - 渲染watcher：queueWatcher(this)，aync=true
+  - userWatcher 用户自定义 `vm.$watch('watson', ()=>{})`
+    - `initWatch() -> $watch -> new Watcher() -> deep=true && traverse(value) 递归遍历数组对象的所有属性`
 8. method原理
   - 方法用到模版上，每次视图更新都会执行
-9. 生命周期
+9. computed，watch比较
+  - 计算属性是同步执行的默认不执行，计算属性的watcher比普通watcher先执行；
+  - 为什么computed没有deep:true属性，因为计算属性使用在模版中{{}}，在模版中的数据会调用JSON.stringify()，JSON.stringify里面是一个对象的话，会默认对对象里的属性进行取值
+  - watch默认先执行，有deep:true属性，将对象里面的所有属性进行依赖收集
+  - 源码中有写：user watchers > render watchers
+10. 生命周期
+  - 最佳实践 - 每个生命周期可以做什么
+    - beforeCreate：
+    - created：实例化完成，获取vm属性和方法，watch/event事件回调，【未挂载】，ssr时请求数据请求
+    - beforeMount：
+    - mounted：挂载完成，获取vm.$el，请求ajax
+    - beforeUpdate：数据更改，虚拟DOM重新渲染之前，为了不附加重新渲染，在这里进一步更改状态
+    - updated：禁止更改数据，ssr不被调用
+    - beforeDestory：实例销毁之前，清除定时器，清除原生绑定，清除$on
+    - destoryed：实例和所有子实例销毁完成，ssr不被调用
+11. 
