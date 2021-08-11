@@ -46,4 +46,57 @@
     - updated：禁止更改数据，ssr不被调用
     - beforeDestory：实例销毁之前，清除定时器，清除原生绑定，清除$on
     - destoryed：实例和所有子实例销毁完成，ssr不被调用
-11. 
+11. 模版编译原理 - 把模版变成render函数
+  - vue源码模版引擎的实现原理三步 baseCompile方法
+  - 第一步：将模版转化成ast(抽象语法树，描述html语法的对象)：`const ast = parse(template.trim(), options)`
+        主要通过正则匹配出标签/属性/{{}}模版语法/指令等描述html的元素，返回一个ast对象
+  - 第二步：将ast生成js代码：`const code = generate(ast, options)`
+        主要遍历ast对象用字符串拼接的方式生成可供js执行的字符串，返回这个字符串
+  - 第三步：包装成函数：let render=`with(this){return ${code}}`; let renderFn=new Function(render)
+        将字符串用with语句拼接，用 `new Function` 包装成一个js函数，render函数
+12. v-if 与 v-show 区别
+  - v-if 如果条件不成立，不会渲染当前指令所在节点的dom元素，编译成`一个三元表达式`，if判断成立则渲染节点，不成立则为空
+  - v-show 切换当前节点dom元素的显示或者隐藏，编译成`一个指令dirctives`，运行时会处理 show指令，如果value是false，设置当前元素的 el.style.display='none'
+13. 为什么 v-for 和 v-if 不能连用
+  - 先循环后判断，v-for 的优先级比 v-if高，连用的话，v-if会给每个元素都添加一下，造成性能问题
+14. vue中的虚拟DOM
+  - 源码中创建标签： _c() -> vnode()
+  ```js
+  function _c(tag,data,...children){
+    let key = data.key
+    delete data.key
+    children = children.map(child=>{
+      if(typeof child === 'object'){
+        return child
+      } else {
+        return vnode(undefined,undefined,undefined,undefined,child)
+      }
+    })
+    return vnode(tag,data,key,children)
+  }
+  function vnode(tag,data,key,children,text){
+    return {
+      tag,data,key,children,text
+    }
+  }
+  let r = _c('div',{id:'container'},_c('p',{},'hello'),'watson')
+  console.log(r)
+  ```
+15. diff算法的时间复杂度
+  - vue是基于同层级的元素的 vDom的对比，vue的优化逻辑分为四步
+  - 第一步：先同级比较，在比较子节点
+  - 第二步：先判断一方有子节点，一方没有子节点的情况
+  - 第三步：比较都有子节点的情况(双指针算法)
+  - 第四步：递归比较子节点
+16. 
+  - 
+17. 
+  - 
+18. 
+  - 
+19. 
+  - 
+
+
+
+
