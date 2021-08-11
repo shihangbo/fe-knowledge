@@ -88,13 +88,58 @@
   - 第二步：先判断一方有子节点，一方没有子节点的情况
   - 第三步：比较都有子节点的情况(双指针算法)
   - 第四步：递归比较子节点
-16. 
+16. v-for 中为什么要用key
+  - 为了做dom-diff，比较两个元素是否相等，比较key和标签名是否相等
+  - 如果没有key，vue只会对应标签名，如果标签名一样，会复用当前标签，只创建不同的子元素
+17. 描述组件的渲染，更新过程，以及组件的复用
+  - 父子组件的渲染顺序 - 生命周期调用顺序
+      - 首次渲染：父beforeCreate - 父created - 父beforeMount - 子beforeCreate - 子created - 子beforeMoute - 子mounted
+      父mounted
+      - 子组件更新：父beforeUpdate - 子beforeUpdate - 子updated - 父updated
+      - 父组件更新：父beforeUpdate - 父updated
+      - 销毁：父beforeDestory - 子beforeDestory - 子destoryed - 父destoryed
+      - 原则：组件创建/销毁都是 `先父后子`，组件渲染挂载/销毁完成都是 `先子后父`
+  - 渲染组件：分两步
+      第一步：创建，调用createComponent方法，通过 `Vue.extend` 构建组件的构造函数，返回组件vnode对象
+      第二步：挂载，调用createElm，通过组件的init方法 去 new Ctor一个实例，手动调用 `child.$mount` 进行挂载，并且实例化组件watcher
+  - 更新组件：进行 patchVnode流程，核心是diff算法
+  - 复用：多次创建组件，多次 new Ctor 产生不同的实例
+18. 组件中的data为什么是一个函数，为什么会被复用
+  - data属性在options对象中，options对象被定义在组件Ctor的原型，data如果是一个对象的话可通过原型链可进行共享，如果是一个函数的话，每次实例化组件的时候都会获取到一份独立的数据
+  - `mergeOptions(Super.options,extendOptions)`
+20. Vue中事件绑定的原理
+  - vue的事件绑定有两种：原生的事件绑定 `@click.native="fn"`，组件的事件绑定 `@click="fn1"`
+  - 原生：addEventListener实现，组件编译后原生事件为 nativeOn属性 等价于 普通元素的on
+  - 组件：$on实现，组件编译后的事件为 on会单独处理
+  - 性能问题：避免给v-for里面的元素绑定事件
+21. v-model 实现原理 如何自定义
+  - 原理：是input || textarea 标签中     `value+input方法` 的语法糖，被编译成3个属性 `指令/domProps(value)/on(input)`
+         type='checkbox'  `checked+change方法`，被编译成3个属性 `指令/domProps(checked)/on(change)`
+         type='select'    ?
+         type='radio'     ?
+         type='textarea'  ?
+         是自定义组件中     `value+input方法` 的语法糖，被编译成 `model:{value:(value),callback:function(){},expression:'value'}`，在组件创建的时候进行转化transformModel，默认prop设为value，event设为input，并且绑定on事件=callback
+  ```html
+    <input :value="value" @input="input"/>
+    <input v-model="value"/>
+  ```
+  - 自定义：在组件中自定义 `model:{prop:'value',event:'input'}`，prop对应value名字，event对应方法名
+22. v-html 使用的问题
+  - 原理：innerHTML
+  - 导致xss攻击 `<img onerror="fn"/>`
+  - 会替换掉标签内部子元素
+23. 通信问题 - 6种方式
+  - vue组件的通信是基于 `单向数据流`
   - 
-17. 
+24. 
   - 
-18. 
+25. 
   - 
-19. 
+26. 
+  - 
+27. 
+  - 
+28. 
   - 
 
 
