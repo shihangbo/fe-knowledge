@@ -144,6 +144,8 @@
       this.options = mergeOptions(this.options,mixin) // 将当前属性合并到每个组件中
       return this
     }
+    // 组件中的mixin：在创建组件的过程中进行mergeOptions
+    // 全局的mixin：在初始化的过程中进行
     function mergeOptions(parent,child){
       // todo...
       if (child.mixins) { // 递归合并mixin
@@ -154,10 +156,61 @@
       // todo...
     }
   ```
-25. 
-  - 
-26. 
-  - 
+  - 问题：命名空间的问题，数据来源混乱的问题 -> component API
+25. 为什么使用异步组件
+  - 性能优化：减少打包体积，减少首屏响应时间，提高用户体验
+  - 原理：主要依赖import语法，webpack根据import实现文件的分割，采用josnp加载
+  ```js
+  // 组件定义为函数 import语法
+  components: {
+    customerCom: (resolve)=>import('../components/customer-com')
+  }
+  // async component
+  function asycComponent() {
+    // todo...
+    let asyncFactory
+    asyncFactory = Ctor // 异步组件是一个函数，新版本支持对象写法
+    // 让一步组件执行，import('../components/customer-com')返回是一个Promise，不会立即返回结果，因此没有返回值，即为undefined
+    Ctor = resolveAsycComponent(asyncFactory, baseCtor)
+    // 初次执行的时候 走这里
+    if(Ctor===undefined) {
+      return createAsyncPlaceholder() // 返回一个占位符 <!-->
+    }
+    // todo...
+    // 再次执行的时候 走下来
+    //  创建组件
+    //  渲染组件
+  }
+  
+  // 在组件加载完之后
+  function resolveAsycComponent(factory, baseCtor) {
+    // 2.factory处理完成后 会再次走到resolveAsycComponent，返回真正的结果
+    if (factory.resolved) {
+      return factory.resolved
+    }
+
+    const resolve = () => { // 成功之后的回调
+      //  先把结果放到resolved属性上
+      factory.resolved = ensureCtor(res, baseCtor)
+      forceRender(true) // 调用 $forceUpdate()
+    }
+    // 1.成功 和 失败的处理
+    const res = factory(resolve,reject)
+  }
+  function forceRender() {
+    // 强制更新，从新走异步组件的创建流程 会再次执行 resolveAsycComponent
+    $forceUpdate()
+  }
+  ```
+  - jsonp
+26. 作用域插槽
+  - 插槽
+    - 创建：父组件：创建父组件虚拟节点时，插槽会被直接编译成带有slot属性的vnode保存起来，`{a:[vnode],b:[vnode]}`
+    - 渲染：子组件拿父组件创建好的对应的slot属性的节点进行替换操作，[插槽的作用域为父组件]
+    - 原则：父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的
+  - 作用域插槽
+    - 创建：父组件：父组件的作用域插槽会被编译成scopedSlots属性，key为slot名字，[插槽的内容被编译成函数fn]
+    - 渲染：子组件渲染时，根据名字找到对应的slot，调用这个函数进行渲染，[插槽的作用域为子组件]
 27. 
   - 
 28. 
