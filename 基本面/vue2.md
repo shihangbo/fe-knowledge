@@ -130,9 +130,30 @@
   - 会替换掉标签内部子元素
 23. 通信问题 - 6种方式
   - vue组件的通信是基于 `单向数据流`
-  - 
-24. 
-  - 
+  - 1.父子间通信：props,$on-$emit（发布订阅）
+  - 2.父子组件实例：$parent,$children
+  - 3.父组件提供数据：Provide,inject（插件）
+  - 4.获取组件实例：ref
+  - 5.跨组件通信：Event Bus，基于$on-$emit，专门创建一个实例`Vue.prototype.$bus = new Vue()`进行通信
+  - 6.状态管理：vuex
+24. 相同逻辑如何抽离
+  - Vue.mixin 给组件每个生命周期，函数等混入一些公共逻辑
+  - 原理：
+  ```js
+    Vue.minix = function(mixin){
+      this.options = mergeOptions(this.options,mixin) // 将当前属性合并到每个组件中
+      return this
+    }
+    function mergeOptions(parent,child){
+      // todo...
+      if (child.mixins) { // 递归合并mixin
+        for(let i=0,l=child.length;i<l;i++){
+          parent=mergeOptions(parent,child.mixins[i])
+        }
+      }
+      // todo...
+    }
+  ```
 25. 
   - 
 26. 
