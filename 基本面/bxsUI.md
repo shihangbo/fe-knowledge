@@ -33,4 +33,14 @@ npm i -D postcss-pxtorem
 npm i -S lib-flexible
 ```
 
+## 前期总结 - 移动端UI库
+1. mint-ui
+    http://mint-ui.github.io/docs/#/zh-cn2/quickstart
+2. ant design mobile (react)
+    https://mobile.ant.design/docs/react/use-with-create-react-app-cn
+3. mand mobile
+    https://didi.github.io/mand-mobile/#/zh-CN/docs/started
+4. vant
+    https://vant-contrib.gitee.io/vant/#/zh-CN/popup
+
 
