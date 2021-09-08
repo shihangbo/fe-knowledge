@@ -43,4 +43,9 @@ npm i -S lib-flexible
 4. vant
     https://vant-contrib.gitee.io/vant/#/zh-CN/popup
 
+## 组件设计
+1. 组件分类
+2. 开发理念
 
+
+## 有赞 https://zhuanlan.zhihu.com/p/34774150

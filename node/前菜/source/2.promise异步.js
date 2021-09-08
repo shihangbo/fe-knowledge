@@ -58,5 +58,5 @@ class Promise {
     }
   }
 }
-
+// new Promise(resolve, reject).then(res => {}, err => {})
 module.exports = Promise
