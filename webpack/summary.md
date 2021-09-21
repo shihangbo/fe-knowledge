@@ -764,3 +764,11 @@ module.exports={
 // common~pageA～pageB～pageC.js   提取自定义的公用的chunk，如工具方法js
 // vendors~pageA～pageB～pageC.js  提取node_modules中的公用chunk，如jquery.js
 ```
+
+
+## 实战
+- 如何配置和启动项目
+- 进行数据性能分析
+- 编译时间的优化
+- 编译体积的优化
+- 如何运行更快
