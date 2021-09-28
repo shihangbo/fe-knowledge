@@ -17,8 +17,28 @@ function curry(fn){
   }
   return curried
 }
-
 ```
-- 组合
-- Pointfree
+- 组合       ：多个函数组合在一起
+```js
+// 从左往右组合 如参数为fn3，fn2，fn1，返回结果 fn3(fn2(fn1()))
+function flow(...fns) {
+  if (fns.length == 1) {
+    return fns[0]
+  }
+  return fns.reduce((a,b) => (...args) => a(b(...args)))
+}
+function add1(str) {
+  return str + 1
+}
+function add2(str) {
+  return str + 2
+}
+function add3(str) {
+  return str + 3
+}
+let flowed = flow(add3,add2,add1)
+let res = flowed('a')
+console.log(res)
+```
+- Pointfree  ：先组合函数，最后传入参数执行
 - 函子
